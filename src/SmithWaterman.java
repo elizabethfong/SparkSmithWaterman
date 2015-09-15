@@ -1,4 +1,5 @@
 import java.lang.StringBuilder ;
+import java.util.Stack ;
 
 /**
  * Non-parallel Smith-Waterman
@@ -16,6 +17,8 @@ public class SmithWaterman
 	
 	private int[][] _matrix ;
 	
+	/* --- CONSTRUCTION ---------------------------------------------------- */
+	
 	/**
 	 * Initialisation
 	 * 
@@ -24,12 +27,12 @@ public class SmithWaterman
 	 */
 	public SmithWaterman( String seq1 , String seq2 )
 	{
-		_seq1 = seq1 ;
-		_seq2 = seq2 ;
+		_seq1 = seq2 ;
+		_seq2 = seq1 ;
 		
 		// i -> east-directed
 		// j -> south-directed
-		_matrix = new int[seq2.length()+1][seq1.length()+1] ;
+		_matrix = new int[seq1.length()+1][seq2.length()+1] ;
 		
 		// init matrix
 		for( int i = 0 ; i < _matrix.length ; i++ )
@@ -42,14 +45,18 @@ public class SmithWaterman
 				_matrix[i][j] = score(i,j) ;
 	}
 	
+	
+	/* --- SCORING --------------------------------------------------------- */
+	
+	// SCORE
 	public int score( int i , int j )
 	{
-		char char1 = Character.toUpperCase( _seq2.charAt(i-1) ) ;
-		char char2 = Character.toUpperCase( _seq1.charAt(j-1) ) ;
+		char base1 = Character.toUpperCase( _seq1.charAt(i-1) ) ;
+		char base2 = Character.toUpperCase( _seq2.charAt(j-1) ) ;
 		
 		int[] scores = new int[3] ;
 		
-		scores[0] = alignmentScore( i , j , char1 , char2 ) ;
+		scores[0] = alignmentScore( i , j , base1 , base2 ) ;
 		scores[1] = insertionScore(i,j) ;
 		scores[2] = deletionScore(i,j) ;
 		
@@ -67,15 +74,15 @@ public class SmithWaterman
 	}
 	
 	// score: alignment -> NW
-	public int alignmentScore( int i , int j , char char1 , char char2 )
+	public int alignmentScore( int i , int j , char base1 , char base2 )
 	{
-		return _matrix[i-1][j-1] + similarity( char1 , char2 ) ;
+		return _matrix[i-1][j-1] + similarity( base1 , base2 ) ;
 	}
 	
-	public int similarity( char char1 , char char2 )
+	public int similarity( char base1 , char base2 )
 	{
 		// match
-		if( char1 == char2 )
+		if( base1 == base2 )
 			return MATCH ;
 		// mismatch
 		else
@@ -94,6 +101,14 @@ public class SmithWaterman
 		return _matrix[i-1][j] + GAP ;
 	}
 	
+	
+	/* --- ALIGNMENT ------------------------------------------------------- */
+	
+	
+	
+	
+	/* --- PRINT ----------------------------------------------------------- */
+	
 	// PRINT MATRIX
 	public String printMatrix()
 	{
@@ -109,6 +124,38 @@ public class SmithWaterman
 		
 		return str.toString() ;
 	}
+	
+	
+	/* --- FOR STACK ------------------------------------------------------- */
+	
+	private class Node
+	{
+		private static final int ALIGN = 0 ;
+		private static final int INSERT = 1 ;
+		private static final int DELETE = 2 ;
+		
+		private final char base1 , base2 ;
+		private final int i , j ;
+		private final int score ;
+		private int alignType ;
+		
+		private Node( char base1 , char base2 , int i , int j , int score )
+		{
+			this.base1 = base1 ;
+			this.base2 = base2 ;
+			this.i = i ;
+			this.j = j ;
+			this.score = score ;
+		}
+		
+		private void setAlignType( int alignType )
+		{
+			this.alignType = alignType ; 
+		}
+	}
+	
+	
+	/* --- MAIN ------------------------------------------------------------ */
 	
 	// MAIN
 	public static void main( String[] args )
