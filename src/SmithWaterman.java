@@ -3,16 +3,32 @@ import java.lang.StringBuilder ;
 import java.util.ArrayList ;
 import java.util.Stack ;
 
-
+/**
+ * Smith-Waterman OOP version
+ * 
+ * @author Elizabeth Fong
+ * @version September 2015, Insight Data Engineering NY
+ */
 public class SmithWaterman 
 {
+	// Sequence 1 -> genome, Sequence 2 -> the read
 	private final String _seq1 , _seq2 ;
 	
+	// Matrix for finding optimal alignment
 	private Proclet[][] _matrix ;
 	
+	// Optimal alignment(s) with highest alignment score
 	private Alignment[] _optAlignments ;
 	
 	
+	/* --- CONSTRUCTION ---------------------------------------------------- */
+	
+	/**
+	 * Constructor: Runs the S-W algorithm to find optimal alignment(s)
+	 * 
+	 * @param seq1 The gene/sequence the read is compared to
+	 * @param seq2 The read
+	 */
 	public SmithWaterman( String seq1 , String seq2 )
 	{
 		_seq1 = seq2 ;
@@ -58,6 +74,15 @@ public class SmithWaterman
 		_optAlignments = alignments.toArray( array ) ;
 	}
 	
+	
+	/* --- MATRIX SCORING -------------------------------------------------- */
+	
+	/**
+	 * Fills the matrix of proclets with scores for each alignment
+	 * 
+	 * @return A {@code Stack} of proclets representing the end of each
+	 * 		   potential optimal alignment.
+	 */
 	private Stack<Proclet> scoring()
 	{
 		// init alignment
@@ -95,6 +120,16 @@ public class SmithWaterman
 		return maxProclets ;
 	}
 	
+	
+	/* --- OPTIMAL ALIGNMENT ----------------------------------------------- */
+	
+	/**
+	 * Returns the alignment of the sequences ending with the given proclet.
+	 * 
+	 * @param proc The last proclet of the alignment.
+	 * 
+	 * @return The alignment of the sequences ending with the given proclet.
+	 */
 	private Alignment getAlignment( Proclet proc )
 	{
 		// find optimal alignment - push proclets of highest score onto stack
@@ -129,6 +164,13 @@ public class SmithWaterman
 		return new Alignment( seq1.toString() , seq2.toString() , alignScore ) ;
 	}
 	
+	/**
+	 * Returns the next proclet when reverse-engineering the alignment.
+	 * 
+	 * @param proc The current proclet.
+	 * 
+	 * @return The next proclet.
+	 */
 	private Proclet getNextProclet( Proclet proc )
 	{
 		char alignment = proc.alignmentType ;
@@ -149,137 +191,16 @@ public class SmithWaterman
 		}
 	}
 	
-	private class Proclet
-	{
-		private static final int MATCH = 5 ;
-		private static final int MISMATCH = -3 ;
-		private static final int GAP = -4 ;
-		
-		private static final char ALIGN = 'a' ;
-		private static final char INSERTION = 'i' ;
-		private static final char DELETION = 'd' ;
-		
-		private static final char GAP_CHAR = '_' ;
-		
-		private final int i , j ;
-		
-		private int score ;
-		
-		private char base1 , base2 ;
-		
-		private char alignmentType ;
-		private int alignmentScore ;
-		
-		private Proclet()
-		{
-			i = 0 ;
-			j = 0 ;
-			score = 0 ;
-		}
-		
-		private Proclet( int i , int j )
-		{
-			this.i = i ;
-			this.j = j ;
-			
-			base1 = Character.toUpperCase(_seq1.charAt(i-1)) ;
-			base2 = Character.toUpperCase(_seq2.charAt(j-1)) ;
-			
-			score = procletScore() ;
-			getAlignment() ;
-		}
-		
-		private int procletScore()
-		{
-			int max = 0 ;
-			
-			int tmp = deletionScore() ;
-			if( tmp >= max )
-			{
-				max = tmp ;
-				alignmentType = DELETION ;
-			}
-			
-			tmp = insertionScore() ;
-			if( tmp >= max )
-			{
-				max = tmp ;
-				alignmentType = INSERTION ;
-			}
-			
-			tmp = alignmentScore() ;
-			if( tmp >= max )
-			{
-				max = tmp ;
-				alignmentType = ALIGN ;
-			}
-			
-			return max ;
-		}
-		
-		private int alignmentScore()
-		{
-			int similarity = 0 ;
-			
-			// match or mismatch
-			if( base1 == base2 )
-				similarity = MATCH ;
-			else
-				similarity = MISMATCH ;
-			
-			return _matrix[i-1][j-1].score + similarity ;
-		}
-		
-		// score: insertion -> north
-		private int insertionScore()
-		{
-			return _matrix[i][j-1].score + GAP ;
-		}
-		
-		// score: deletion -> west
-		private int deletionScore()
-		{
-			return _matrix[i-1][j].score + GAP ;
-		}
-		
-		private void getAlignment()
-		{
-			switch( alignmentType )
-			{
-				case ALIGN :
-					if( base1 == base2 )
-						alignmentScore = MATCH ;
-					else
-						alignmentScore = MISMATCH ;
-					break ;
-					
-				case INSERTION :
-					alignmentScore = GAP ;
-					base1 = GAP_CHAR ;
-					break ;
-				
-				case DELETION :
-					alignmentScore = GAP ;
-					base2 = GAP_CHAR ;
-					break ;
-			}
-		}
-	}
 	
-	private class Alignment
-	{
-		private String seq1 , seq2 ;
-		private int score ;
-		
-		private Alignment( String seq1 , String seq2 , int alignmentScore )
-		{
-			this.seq1 = seq1 ;
-			this.seq2 = seq2 ;
-			score = alignmentScore ;
-		}
-	}
+	/* --- OUTPUT ---------------------------------------------------------- */
 	
-	
+	/**
+	 * Returns a {@code String} representation of the sequence alignment,
+	 * showing the scoring matrix and all optimal alignments and their
+	 * alignment scores.
+	 * 
+	 * @return The {@code String} representation of this sequence alignment.
+	 */
 	@Override
 	public String toString()
 	{
@@ -330,6 +251,227 @@ public class SmithWaterman
 		return str.toString() ;
 	}
 	
+	
+	/* --- INNER CLASSES --------------------------------------------------- */
+	
+	/**
+	 * An entry in the scoring matrix.
+	 * Calculates and stores the alignment of the 2 base pairs compared and 
+	 * their alignment score and type (match/mismatch/insertion/deletion).
+	 * 
+	 * @author Elizabeth Fong
+	 */
+	private class Proclet
+	{
+		// Constants: scoring -> match, mismatch and gap.
+		private static final int MATCH = 5 ;
+		private static final int MISMATCH = -3 ;
+		private static final int GAP = -4 ;
+		
+		// Constants: alignment type
+		private static final char ALIGN = 'a' ;
+		private static final char INSERTION = 'i' ;
+		private static final char DELETION = 'd' ;
+		
+		// Constant: display character for a gap (either from insertion or deletion)
+		private static final char GAP_CHAR = '_' ;
+		
+		// i and j indices for matrix position.
+		private final int i , j ;
+		
+		// proclet/matrix score for the alignment of these 2 base pairs
+		private int score ;
+		
+		// The base pairs in this alignment. May contain a gap from insertion/deletion
+		private char base1 , base2 ;
+		
+		// alignment type and score for the alignment of these 2 base pairs
+		private char alignmentType ;
+		private int alignmentScore ;
+		
+		
+		/**
+		 * A 0-proclet, aligning a base pair and a gap. Score = 0 ;
+		 */
+		private Proclet()
+		{
+			i = 0 ;
+			j = 0 ;
+			score = 0 ;
+		}
+		
+		/**
+		 * A proclet at index i and j of the matrix, aligning 2 base pairs.
+		 * 
+		 * @param i Index of sequence 1
+		 * @param j Index of sequence 2
+		 */
+		private Proclet( int i , int j )
+		{
+			this.i = i ;
+			this.j = j ;
+			
+			base1 = Character.toUpperCase(_seq1.charAt(i-1)) ;
+			base2 = Character.toUpperCase(_seq2.charAt(j-1)) ;
+			
+			// get score and alignment
+			score = procletScore() ;
+			getAlignment() ;
+		}
+		
+		
+		/**
+		 * Returns the proclet/matrix score for this proclet.
+		 * score = max( 0 , alignment , insertion , deletion )
+		 * 
+		 * @return The proclet/matrix score for this proclet.
+		 */
+		private int procletScore()
+		{
+			int max = 0 ;
+			
+			// deletion score
+			int tmp = deletionScore() ;
+			if( tmp >= max )
+			{
+				max = tmp ;
+				alignmentType = DELETION ;
+			}
+			
+			// insertion score
+			tmp = insertionScore() ;
+			if( tmp >= max )
+			{
+				max = tmp ;
+				alignmentType = INSERTION ;
+			}
+			
+			// alignment score
+			tmp = alignmentScore() ;
+			if( tmp >= max )
+			{
+				max = tmp ;
+				alignmentType = ALIGN ;
+			}
+			
+			return max ;
+		}
+		
+		/**
+		 * Returns the proclet/matrix score for an alignment (match/mismatch).
+		 * alignment -> from NW
+		 * 
+		 * @return The proclet/matrix score for an alignment (match/mismatch).
+		 */
+		private int alignmentScore()
+		{
+			int similarity = 0 ;
+			
+			// similarity score -> match or mismatch
+			if( base1 == base2 )
+				similarity = MATCH ;
+			else
+				similarity = MISMATCH ;
+			
+			return _matrix[i-1][j-1].score + similarity ;
+		}
+		
+		/**
+		 * Returns the proclet/matrix score for an insertion.
+		 * insertion -> from north
+		 * 
+		 * @return The proclet/matrix score for an insertion.
+		 */
+		private int insertionScore()
+		{
+			return _matrix[i][j-1].score + GAP ;
+		}
+		
+		/**
+		 * Returns the proclet/matrix score for a deletion.
+		 * deletion -> from west
+		 * 
+		 * @return The proclet/matrix score for a deletion.
+		 */
+		private int deletionScore()
+		{
+			return _matrix[i-1][j].score + GAP ;
+		}
+		
+		
+		/* --- Alignment ------------------------------- */
+		
+		/**
+		 * From the alignment type, determine which bases are aligned to
+		 * each other in this set of base pairs.
+		 */
+		private void getAlignment()
+		{
+			switch( alignmentType )
+			{
+				// alignment: match/mismatch
+				case ALIGN :
+					if( base1 == base2 )
+						alignmentScore = MATCH ;
+					else
+						alignmentScore = MISMATCH ;
+					break ;
+				
+				// insertion -> insertion into read, thus gap in gene
+				case INSERTION :
+					alignmentScore = GAP ;
+					base1 = GAP_CHAR ;
+					break ;
+				
+				// deletion -> deletion from read, thus gap in read
+				case DELETION :
+					alignmentScore = GAP ;
+					base2 = GAP_CHAR ;
+					break ;
+			}
+		}
+	}
+	
+	
+	/**
+	 * A wrapper class wrapping the 2 seqences in their alignment with the
+	 * alignment score.
+	 * 
+	 * @author Elizabeth Fong
+	 */
+	private class Alignment
+	{
+		// seq1 -> the part of the gene in the alignment
+		// seq2 -> the part of the read in the alignment
+		private String seq1 , seq2 ;
+		
+		// the alignment score
+		private int score ;
+		
+		/**
+		 * Constructor.
+		 * 
+		 * @param seq1 The part of the gene in the alignment
+		 * @param seq2 The part of the read in the alignment
+		 * @param alignmentScore The alignment score
+		 */
+		private Alignment( String seq1 , String seq2 , int alignmentScore )
+		{
+			this.seq1 = seq1 ;
+			this.seq2 = seq2 ;
+			score = alignmentScore ;
+		}
+	}
+	
+	
+	/* --- MAIN ------------------------------------------------------------ */
+	
+	
+	/**
+	 * Main. Runs the Smith-Waterman algorithm with 2 sequences for comparison.
+	 * 
+	 * @param args None expected.
+	 */
 	public static void main( String[] args )
 	{
 		//String str1 = "ACACACTA" ;
