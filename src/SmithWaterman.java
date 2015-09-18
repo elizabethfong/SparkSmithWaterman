@@ -398,9 +398,6 @@ public class SmithWaterman
 			return _matrix[i-1][j].score + GAP ;
 		}
 		
-		
-		/* --- Alignment ------------------------------- */
-		
 		/**
 		 * From the alignment type, determine which bases are aligned to
 		 * each other in this set of base pairs.
