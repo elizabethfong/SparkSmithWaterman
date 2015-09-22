@@ -22,9 +22,11 @@ public class FtpToS3
 		
 		try
 		{
+			System.out.println( "trying to connect" ) ;
 			ftp.connect( ftpServer ) ;
 			
-			FTPFile[] files = ftp.listFiles() ;
+			FTPFile[] files = ftp.listDirectories() ;
+			System.out.println( "# files = " + files.length ) ;
 			
 			for( int i = 0 ; i < files.length ; i++ )
 			{
@@ -50,7 +52,7 @@ public class FtpToS3
 	
 	public static void main( String[] args )
 	{
-		String ftpServer = "ftp://ftp6.ncbi.nlm.nih.gov/" ;
+		String ftpServer = "ftp.ncbi.nlm.nih.gov" ;
 		String s3Bucket = "ncbi-refseq-rna" ;
 		
 		new FtpToS3( ftpServer , s3Bucket ) ;
