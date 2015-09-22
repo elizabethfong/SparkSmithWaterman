@@ -1,3 +1,5 @@
+package processing ;
+
 // spark default imports
 import org.apache.spark.api.java.JavaSparkContext ;		// entry pt for spark
 import org.apache.spark.api.java.JavaRDD ;		// resilient distributed database
@@ -6,6 +8,7 @@ import org.apache.spark.SparkConf ;		// spark application config
 // spark functions
 import org.apache.spark.api.java.function.Function ;
 import org.apache.spark.api.java.function.Function2 ;
+import org.apache.spark.api.java.function.VoidFunction ;
 
 // java imports
 //import java.lang.Iterable ;
@@ -24,7 +27,7 @@ public class DatabaseUseTest
 	public static final String NEWLINE = System.lineSeparator() ;
 	
 	public static final String APP_NAME = "DatabaseUseTest" ;
-	public static final String DATABASE = "s3n://s3.amazonaws.com/1000genomes" ;
+	public static final String BUCKET = "s3n://1000genomes/" ;
 	
 	
 	// so apparently everything happens in the main...
@@ -39,37 +42,13 @@ public class DatabaseUseTest
 		JavaSparkContext sc = new JavaSparkContext( config ) ;
 		
 		// get rdd from s3
-		JavaRDD<String> database = sc.textFile( DATABASE ) ;
+		JavaRDD<String> bucket = sc.textFile( BUCKET ) ;
 		
 		System.out.println( NEWLINE + NEWLINE + NEWLINE + 
-							"This is the id of the object: " + database + 
+							"This is the id of the object: " + bucket.toString() + 
 							NEWLINE + NEWLINE + NEWLINE ) ;
 		
-		// map each line of the database index...let's try it
-		JavaRDD<String> indexFiles = database.map
-		( 
-			// this returns 0 + output records from each input... interesting
-			new Function<String,String>()
-			{
-				public String call( String str )
-				{
-					return NEWLINE + NEWLINE + str + NEWLINE + NEWLINE ;
-				}
-			}
-		) ;
 		
-		String result = indexFiles.reduce
-		( 
-			new Function2<String,String,String>()
-			{
-				public String call( String str1 , String str2 )
-				{
-					return str1 + str2 ;
-				}
-			}
-		) ;
-		
-		System.out.println( result ) ;
 		
 		sc.close() ;
 	}
