@@ -100,6 +100,7 @@ public class DirectoryCrawler
 	
 	/* --- MAIN ------------------------------------------------------------ */
 	
+	/*
 	public static void main( String[] args )
 	{
 		String root = "test" ;
@@ -112,5 +113,5 @@ public class DirectoryCrawler
 		}
 		
 	}
-	
+	*/
 }

@@ -22,7 +22,7 @@ public class SmithWaterman
 	
 	// Optimal alignment(s) with highest alignment score
 	private Alignment[] _optAlignments ;
-	
+	private int _maxScore ;
 	
 	/* --- CONSTRUCTION ---------------------------------------------------- */
 	
@@ -54,20 +54,20 @@ public class SmithWaterman
 		// get optimal alignment(s)
 		ArrayList<Alignment> alignments = new ArrayList<Alignment>(proclets.size()) ;
 		
-		int maxScore = 0 ;
+		_maxScore = 0 ;
 		
 		while( ! proclets.isEmpty() )
 		{
 			Alignment align = getAlignment( proclets.pop() ) ;
 			
-			if( align.score > maxScore )
+			if( align.score > _maxScore )
 			{
 				alignments.clear() ;
 				alignments.add( align ) ;
 				
-				maxScore = align.score ;
+				_maxScore = align.score ;
 			}
-			else if( align.score == maxScore )
+			else if( align.score == _maxScore )
 			{
 				alignments.add( align ) ;
 			}
@@ -196,6 +196,11 @@ public class SmithWaterman
 	
 	
 	/* --- OUTPUT ---------------------------------------------------------- */
+	
+	public int alignmentScore()
+	{
+		return _maxScore ;
+	}
 	
 	/**
 	 * Returns a {@code String} representation of the sequence alignment,
@@ -466,13 +471,12 @@ public class SmithWaterman
 	
 	/* --- MAIN ------------------------------------------------------------ */
 	
-	
 	/**
 	 * Main. Runs the Smith-Waterman algorithm with 2 sequences for comparison.
 	 * 
 	 * @param args None expected.
 	 */
-	public static void main( String[] args )
+	/*public static void main( String[] args )
 	{
 		//String str1 = "ACACACTA" ;
 		//String str2 = "AGCACACA" ;
@@ -489,4 +493,5 @@ public class SmithWaterman
 		System.out.println( "" ) ;
 		System.out.println( sw.toString() ) ;
 	}
+	*/
 }
