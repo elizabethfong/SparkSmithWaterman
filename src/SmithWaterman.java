@@ -1,11 +1,4 @@
 
-
-import org.apache.spark.SparkConf ;
-
-import org.apache.spark.api.java.JavaRDD ;
-import org.apache.spark.api.java.JavaSparkContext ;
-
-import org.apache.spark.api.java.function.Function ;
 import org.apache.spark.api.java.function.Function2 ;
 import org.apache.spark.api.java.function.Function3 ;
 
@@ -397,16 +390,14 @@ public class SmithWaterman
 	public static void main( String[] args )
 	{
 		// constants
-		final String FILE_REF = "/home/ubuntu/project/testRef/vertebrate_mammalian.415.rna.fna" ;
-		final String FILE_IN = "/home/ubuntu/project/testIn/test1.fa" ;
-		
 		final int[] alignScores = {5,-3,-4} ;	// {match,mismatch,gap}
 		final char[] alignTypes = {'a','i','d','-'} ;
 		
-		final String[] seq = { "CGTGAATTCAT" , "GACTTAC" } ;	// {ref,in}
+		//final String[] seq = { "CGTGAATTCAT" , "GACTTAC" } ;	// {ref,in}
+		final String[] seq = { "ATGCA" , "ACTCA" } ;
 		
-		System.out.println( "Str1 = " + seq[0] ) ;
-		System.out.println( "Str2 = " + seq[1] ) ;
+		System.out.println( "Reference = " + seq[0] ) ;
+		System.out.println( "Input = " + seq[1] ) ;
 		
 		// run algorithm
 		Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>> result = 
