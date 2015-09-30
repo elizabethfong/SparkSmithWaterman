@@ -1,3 +1,4 @@
+package com.sw ;
 
 import org.apache.spark.api.java.function.Function2 ;
 import org.apache.spark.api.java.function.Function3 ;
@@ -35,14 +36,18 @@ public class SmithWaterman
 			int[][] scores = new int[inSeq.length()+1][refSeq.length()+1] ;
 			char[][] aligns = new char[inSeq.length()+1][refSeq.length()+1] ;
 			
+			refSeq = null ;
+			inSeq = null ;
 			
 			// step 1: score matrix
 			Tuple2<int[][],char[][]> matrices = new Tuple2<int[][],char[][]>( scores , aligns ) ;
 			Tuple2<int[],char[]> alignInfo = new Tuple2<int[],char[]>( alignScores , alignTypes ) ;
 			
-			Tuple4<int[][],char[][],ArrayList<int[]>,Integer> result1 = 
-					new ScoreMatrix().call( matrices , seq , alignInfo ) ;
+			Tuple4<int[][],char[][],ArrayList<int[]>,Integer> result1 = new ScoreMatrix().call( matrices , seq , alignInfo ) ;
 			
+			scores = null ;
+			inSeq = null ;
+			matrices = null ;
 			
 			// step 2: backtrack from cells w/ max scores to find opt alignments
 			matrices = new Tuple2<int[][],char[][]>( result1._1() , result1._2() ) ;
@@ -50,7 +55,7 @@ public class SmithWaterman
 			Tuple2<String[],char[]> matrixInfo = new Tuple2<String[],char[]>( seq , alignTypes ) ;
 			
 			
-				SmithWaterman.printMatrices(matrices._1(), matrices._2(), seq);
+				//SmithWaterman.printMatrices(matrices._1(), matrices._2(), seq);
 			
 			
 			ArrayList<Tuple2<String[],Integer>> opt = new ArrayList<Tuple2<String[],Integer>>(maxCells.size()) ;
@@ -59,6 +64,10 @@ public class SmithWaterman
 			{
 				opt.add( new GetAlignment().call(cell,matrixInfo,matrices) ) ;
 			}
+			
+			maxCells = null ;
+			matrices = null ;
+			matrixInfo = null ;
 			
 			return new Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>>( result1._4() , opt ) ;
 		}
@@ -86,6 +95,9 @@ public class SmithWaterman
 			
 			int[][] scores = matrices._1() ;
 			char[][] aligns = matrices._2() ;
+			
+			seq = null ;
+			matrices = null ;
 			
 			
 			// init matrices
@@ -158,6 +170,7 @@ public class SmithWaterman
 		{
 			int[] alignScores = alignInfo._1() ;
 			char[] alignTypes = alignInfo._2() ;
+			alignInfo = null ;
 			
 			int max = 0 ;
 			char alignment = alignTypes[3] ;
@@ -255,6 +268,9 @@ public class SmithWaterman
 			int[][] scores = matrices._1() ;
 			char[][] aligns = matrices._2() ;
 			
+			matrixInfo = null ;
+			matrices = null ;
+			
 			
 			// step 1: backtrack to find path
 			Stack<char[]> stack = new Stack<char[]>() ;
@@ -296,6 +312,11 @@ public class SmithWaterman
 				score = scores[i][j] ;
 			}
 			
+			refSeq = null ;
+			inSeq = null ;
+			scores = null ;
+			aligns = null ;
+			
 			
 			// step 2: pop stack to form alignment
 			StringBuilder ref = new StringBuilder() ;
@@ -312,12 +333,15 @@ public class SmithWaterman
 			
 			// return
 			String[] alignedSeq = { ref.toString() , in.toString() } ;
+			ref = null ;
+			in = null ;
+			
 			return new Tuple2<String[],Integer>( alignedSeq , new Integer(beginning) ) ;
 		}
 	}
 	
 	
-	private static void printMatrices( int[][] scores , char[][] aligns , String[] seq )
+	public static void printMatrices( int[][] scores , char[][] aligns , String[] seq )
 	{
 		String newline = System.lineSeparator() ;
 		StringBuilder str = new StringBuilder() ;
@@ -394,7 +418,7 @@ public class SmithWaterman
 		final char[] alignTypes = {'a','i','d','-'} ;
 		
 		//final String[] seq = { "CGTGAATTCAT" , "GACTTAC" } ;	// {ref,in}
-		final String[] seq = { "ATGCA" , "ACTCA" } ;
+		final String[] seq = { "ATGCAGAC" , "ACTCA" } ;
 		
 		System.out.println( "Reference = " + seq[0] ) ;
 		System.out.println( "Input = " + seq[1] ) ;
