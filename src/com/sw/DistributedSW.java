@@ -573,7 +573,7 @@ public class DistributedSW
 		}
 	}
 	
-	private static class MatchSiteComp implements Comparator<Tuple2<Integer,String[]>> , Serializable
+	public static class MatchSiteComp implements Comparator<Tuple2<Integer,String[]>> , Serializable
 	{
 		public int compare( Tuple2<Integer,String[]> t1 , Tuple2<Integer,String[]> t2 )
 		{
