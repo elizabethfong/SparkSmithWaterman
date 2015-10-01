@@ -86,7 +86,7 @@ public class DistributedSW
 			
 			
 			// INIT
-			int[] maxIndices = { seq[1].length()-1 , seq[0].length()-1 } ;	// i,j -> in,ref
+			int[] maxIndices = { seq[1].length() , seq[0].length() } ;	// i,j -> in,ref
 			Tuple2<int[],String[]> arrInfo = new Tuple2<int[],String[]>( maxIndices , seq ) ;
 			
 			ArrayList<Tuple2<int[][],char[][]>> list ;
@@ -103,24 +103,28 @@ public class DistributedSW
 			
 			Tuple2<int[][],char[][]> defaultTuple = new Tuple2<int[][],char[][]>( mapParam1 , mapParam2 ) ;
 			
-			// init lists
+			// init lists (list, children)
 			list = new GetInitList().call( coordinates , defaultTuple , arrInfo ) ;
 			
 			int[] nextCoord = {2,1} ;
 			children = new GetInitList().call( nextCoord , defaultTuple , arrInfo ) ;
-			
-			nextCoord = new GetNextStart().call( coordinates , maxIndices ) ;
-			grandchildren = new GetInitList().call( nextCoord , defaultTuple, arrInfo ) ;
 			
 			
 			// DISTRIBUTE!!!
 			JavaSparkContext sc = new JavaSparkContext( new SparkConf() ) ;
 			int maxScore = 0 ;
 			
+			int[] start = null ;
 			ArrayList<int[]> maxCells = new ArrayList<int[]>() ;
 			
 			while( list != null )
 			{
+				// update grandchildren list
+				start = list.get(0)._1()[0] ;
+				start = new GetNextStart().call( start , maxIndices ) ;
+				grandchildren = new GetInitList().call( start , defaultTuple , arrInfo ) ;
+				
+				
 				// parallelise
 				JavaRDD<Tuple2<int[][],char[][]>> distRDD = sc.parallelize(list) ;
 				
@@ -164,13 +168,8 @@ public class DistributedSW
 				
 				
 				// update lists
-				int[] start = list.get(0)._1()[0] ;
-				
 				list = children ;
 				children = grandchildren ;
-				
-				start = new GetNextStart().call( start , maxIndices ) ;
-				grandchildren = new GetInitList().call( start , defaultTuple , arrInfo ) ;
 			}
 			
 			
@@ -422,7 +421,7 @@ public class DistributedSW
 	{
 		public char[] call( int[] coordinates , String[] sequences )
 		{
-			char[] bases = { sequences[0].charAt(coordinates[1]) , sequences[1].charAt(coordinates[0]) } ;
+			char[] bases = { sequences[0].charAt(coordinates[1]-1) , sequences[1].charAt(coordinates[0]-1) } ;
 			return bases ;
 		}
 	}
@@ -474,20 +473,22 @@ public class DistributedSW
 			
 			int len = end[1] - start[1] + 1 ;
 			
-			
 			// init list
 			ArrayList<Tuple2<int[][],char[][]>> list = new ArrayList<Tuple2<int[][],char[][]>>(len) ;
 			
-			for( int i = 0 ; i < list.size() ; i++ )
+			for( int i = 0 ; i < len ; i++ )
+			{
 				list.add( new DeepCopyTuple().call(defaultTuple) ) ;
+			}
 			
-			
+				
 			// update coordinates and bases of each tuple
-			for( int i = 0 ; i < list.size() ; i++ )
+			for( int i = 0 ; i < len ; i++ )
 			{
 				Tuple2<int[][],char[][]> tuple = list.get(i) ;
 				
-				int[] coordinates = { start[0]-i , start[1]-i } ;
+				int[] coordinates = { start[0]-i , start[1]+i } ;
+				
 				tuple._1()[0] = coordinates ;
 				
 				char[] bases = new GetBases().call( coordinates , seq ) ;
@@ -599,13 +600,14 @@ public class DistributedSW
 		Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> result = 
 				new OptAlignments().call( seq , alignScores , alignTypes ) ;
 		
-		System.out.println( "	max score = " + result._1() ) ;
+		System.out.println( "max score = " + result._1() ) ;
+		System.out.println( "" ) ;
 		
 		for( Tuple2<Integer,String[]> tuple : result._2() )
 		{
-			System.out.println( "		index = " + tuple._2() ) ;
-			System.out.println( "		" + tuple._2()[0] ) ;
-			System.out.println( "		" + tuple._2()[1] ) ;
+			System.out.println( "index = " + tuple._1() ) ;
+			System.out.println( "" + tuple._2()[0] ) ;
+			System.out.println( "" + tuple._2()[1] ) ;
 			System.out.println( "" ) ;
 		}
 	}

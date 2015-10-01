@@ -10,6 +10,7 @@ import java.util.ArrayList ;
 import java.util.Scanner ;
 
 import org.apache.spark.api.java.function.Function2 ;
+import org.apache.spark.api.java.function.Function3 ;
 
 
 @SuppressWarnings( "serial" )
@@ -138,6 +139,78 @@ public class InOutOps
 				ioe.printStackTrace() ;
 				return false ;
 			}
+		}
+	}
+	
+	public static class PrintMatrices implements Function3< int[][] , char[][] , String[] , String >
+	{
+		public String call( int[][] scores , char[][] aligns , String[] seq )
+		{
+			StringBuilder str = new StringBuilder() ;
+			
+			String _seq1 = seq[1] ;
+			String _seq2 = seq[0] ;
+			
+			// score matrix
+			str.append( NEWLINE ) ;
+			str.append( "   _  " ) ;
+			
+			for( int i = 0 ; i < _seq2.length() ; i++ )
+			{
+				str.append( Character.toUpperCase(_seq2.charAt(i)) + "  " ) ;
+			}
+			
+			str.append( NEWLINE ) ;
+			
+			for( int i = 0 ; i < scores.length ; i++ )
+			{
+				if( i == 0 )
+					str.append( "_  " ) ;
+				else
+					str.append( Character.toUpperCase(_seq1.charAt(i-1)) + "  " ) ;
+				
+				for( int j = 0 ; j < scores[i].length ; j++ )
+				{
+					int score = scores[i][j] ;
+					
+					if( score < 10 )
+						str.append( score + "  " ) ;
+					else
+						str.append( score + " " ) ;
+				}
+				
+				str.append( NEWLINE ) ;
+			}
+			
+			str.append( NEWLINE ) ;
+			
+			// align type matrix
+			str.append( "   _  " ) ;
+			
+			for( int i = 0 ; i < _seq2.length() ; i++ )
+			{
+				str.append( Character.toUpperCase(_seq2.charAt(i)) + "  " ) ;
+			}
+			
+			str.append( NEWLINE ) ;
+			
+			for( int i = 0 ; i < aligns.length ; i++ )
+			{
+				if( i == 0 )
+					str.append( "_  " ) ;
+				else
+					str.append( Character.toUpperCase(_seq1.charAt(i-1)) + "  " ) ;
+				
+				for( int j = 0 ; j < aligns[i].length ; j++ )
+				{
+					str.append( aligns[i][j] + "  " ) ;
+				}
+				
+				str.append( NEWLINE ) ;
+			}
+			
+			System.out.println( str.toString() ) ;
+			return str.toString() ;
 		}
 	}
 	
