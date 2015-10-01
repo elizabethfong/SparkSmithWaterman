@@ -2,11 +2,15 @@ package com.sw ;
 
 import java.io.Serializable ;
 
+import java.lang.StringBuilder ;
+
 import java.util.ArrayList ;
 import java.util.Comparator ;
 import java.util.List ;
+import java.util.Stack ;
 
 import org.apache.spark.SparkConf ;
+
 import org.apache.spark.api.java.JavaRDD ;
 import org.apache.spark.api.java.JavaSparkContext ;
 
@@ -15,18 +19,19 @@ import org.apache.spark.api.java.function.Function2 ;
 import org.apache.spark.api.java.function.Function3 ;
 
 import scala.Tuple2 ;
-import scala.Tuple3 ;
 import scala.Tuple4 ;
 import scala.Tuple5 ;
-import scala.Tuple6 ;
+
 
 @SuppressWarnings( "serial" ) 
 public class DistributedSW 
 {
+	/* --- PUBLIC METHODS -------------------------------------------------- */
+	
 	public static class OptAlignments
-		implements Function3< String[] , int[] , char[] , Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>> >
+		implements Function3< String[] , int[] , char[] , Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> >
 	{
-		public Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>> call( String[] seq , int[] alignScores , char[] alignTypes )
+		public Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> call( String[] seq , int[] alignScores , char[] alignTypes )
 		{
 			// VARIABLES
 			String refSeq = seq[0] ;	// j
@@ -47,14 +52,17 @@ public class DistributedSW
 			
 			
 			// GET OPT ALIGNMENTS
-			
+			Tuple2<String[],char[]> data = new Tuple2<String[],char[]>( seq , alignTypes ) ;
+			ArrayList<Tuple2<Integer,String[]>> optAlignments = new GetAlignments().call( maxCells , matrices, data ) ;
 			
 			
 			// RETURN!!!
-			return null ;
+			return new Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>>( new Integer(maxScore) , optAlignments ) ;
 		}
 	}
 	
+	
+	/* --- MATRIX SCORING -------------------------------------------------- */
 	
 	// DISTRIBUTED FILLING UP MATRIX
 	private static class ScoreMatrix 
@@ -65,8 +73,6 @@ public class DistributedSW
 			// VARIABLES
 			int[][] scores = matrices._1() ;
 			char[][] aligns = matrices._2() ;
-			
-			JavaSparkContext sc = new JavaSparkContext( new SparkConf() ) ;
 			
 			// init matrices
 			for( int i = 0 ; i < scores.length ; i++ )
@@ -108,7 +114,9 @@ public class DistributedSW
 			
 			
 			// DISTRIBUTE!!!
+			JavaSparkContext sc = new JavaSparkContext( new SparkConf() ) ;
 			int maxScore = 0 ;
+			
 			ArrayList<int[]> maxCells = new ArrayList<int[]>() ;
 			
 			while( list != null )
@@ -285,29 +293,130 @@ public class DistributedSW
 	}
 	
 	
+	/* --- GET OPT ALIGNMENT ----------------------------------------------- */
+	
 	// DISTRIBUTED GETTING OPT ALIGNMENTS
 	private static class GetAlignments 
-			  implements Function3< ArrayList<int[]> , Tuple2<int[][],char[][]> , Tuple2<String[],char[]> , ArrayList<Tuple2<String[],Integer>> >
+			  implements Function3< ArrayList<int[]> , Tuple2<int[][],char[][]> , Tuple2<String[],char[]> , ArrayList<Tuple2<Integer,String[]>> >
 	{
-		public ArrayList<Tuple2<String[],Integer>> call( ArrayList<int[]> starts , Tuple2<int[][],char[][]> matrices , Tuple2<String[],char[]> otherData )
+		public ArrayList<Tuple2<Integer,String[]>> call( ArrayList<int[]> starts , Tuple2<int[][],char[][]> matrices , Tuple2<String[],char[]> otherData )
 		{
 			// VARIABLES
 			int[][] scores = matrices._1() ;
 			char[][] aligns = matrices._2() ;
 			
-			String refSeq = otherData._1()[0] ;
-			String inSeq = otherData._1()[1] ;
+			// get list to map
+			ArrayList<Tuple5<int[],int[][],char[][],String[],char[]>> list = new ArrayList<Tuple5<int[],int[][],char[][],String[],char[]>>(starts.size()) ;
+			
+			for( int[] start : starts )
+			{
+				list.add( new Tuple5<int[],int[][],char[][],String[],char[]>(start,scores,aligns,otherData._1(),otherData._2()) ) ;
+			}
 			
 			
 			// DISTRIBUTE ALIGNMENT START CELLS
+			JavaSparkContext sc = new JavaSparkContext( new SparkConf() ) ;
+			
+			// parallelise start cells, then map
+			JavaRDD<Tuple5<int[],int[][],char[][],String[],char[]>> startRDD = sc.parallelize( list ) ;
+			JavaRDD<Tuple2<Integer,String[]>> matchRDD = startRDD.map( new GetMatchSite() ) ;
+			
+			// reduce: sort by keys, then add values to 			
+			List<Tuple2<Integer,String[]>> matchSites = matchRDD.collect() ;
+			matchSites.sort( new MatchSiteComp() ) ;
+			
+			ArrayList<Tuple2<Integer,String[]>> result = new ArrayList<Tuple2<Integer,String[]>>( matchSites.size() ) ;
+			
+			for( Tuple2<Integer,String[]> site : matchSites )
+			{
+				result.add( site ) ;
+			}
 			
 			
-			return null ;
+			// RETURN!!!
+			sc.close() ;
+			return result ;
+		}
+	}
+	
+	private static class GetMatchSite implements Function< Tuple5<int[],int[][],char[][],String[],char[]> , Tuple2<Integer,String[]> >
+	{
+		public Tuple2<Integer,String[]> call( Tuple5<int[],int[][],char[][],String[],char[]> tuple )
+		{
+			// VARIABLES
+			final char GAP_CHAR = '_' ;
+			
+			int[][] scores = tuple._2() ;
+			char[][] aligns = tuple._3() ;
+			
+			String refSeq = tuple._4()[0] ;
+			String inSeq = tuple._4()[1] ;
+			
+			char[] alignTypes = tuple._5() ;
+			
+			
+			// BACKTRACK!
+			Stack<char[]> stack = new Stack<char[]>() ;
+			
+			int i = tuple._1()[0] ;
+			int j = tuple._1()[1] ;
+			
+			int score = scores[i][j] ;
+			int beginning = 0 ;
+			
+			while( score > 0 )
+			{
+				// update binding site beginning index
+				beginning = j ;
+				
+				// check alignment type -> bases for this location, next cell location
+				char align = aligns[i][j] ;
+				
+				if( align == alignTypes[0] )	// alignment
+				{
+					char[] bases = { refSeq.charAt(j-1) , inSeq.charAt(i-1) } ;
+					stack.push(bases) ;
+					i-- ;
+					j-- ;
+				}
+				else if( align == alignTypes[1] )	// insertion
+				{
+					char[] bases = { GAP_CHAR , inSeq.charAt(i-1) } ;
+					stack.push(bases) ;
+					i-- ;
+				}
+				else	// deletion
+				{
+					char[] bases = { refSeq.charAt(j-1) , GAP_CHAR } ;
+					stack.push(bases) ;
+					j-- ;
+				}
+				
+				score = scores[i][j] ;
+			}
+			
+			
+			// POP STACK TO GENERATE BINDING SITE
+			StringBuilder ref = new StringBuilder() ;
+			StringBuilder in = new StringBuilder() ;
+			
+			while( ! stack.isEmpty() )
+			{
+				char[] bases = stack.pop() ;
+				
+				ref.append( bases[0] ) ;
+				in.append( bases[1] ) ; 
+			}
+			
+			
+			// RETURN!!!
+			String[] aligned = { ref.toString() , in.toString() } ;
+			return new Tuple2<Integer,String[]>( new Integer(beginning) , aligned ) ;
 		}
 	}
 	
 	
-	/* --- UTIL ------------------------------------------------------------ */
+	/* --- UTILITY METHODS ------------------------------------------------- */
 	
 	private static class GetBases implements Function2< int[] , String[] , char[] >
 	{
@@ -334,14 +443,6 @@ public class DistributedSW
 				return surrScore + alignScores[0] ;
 			else
 				return surrScore + alignScores[1] ;
-		}
-	}
-	
-	private static class CellResultComp implements Comparator<Tuple4<int[],Integer,Character,boolean[]>> , Serializable
-	{
-		public int compare( Tuple4<int[],Integer,Character,boolean[]> t1 , Tuple4<int[],Integer,Character,boolean[]> t2 )
-		{
-			return t1._1()[1] - t2._1()[1] ;
 		}
 	}
 	
@@ -461,9 +562,51 @@ public class DistributedSW
 	}
 	
 	
+	/* --- COMPARATORS ----------------------------------------------------- */
+	
+	private static class CellResultComp implements Comparator<Tuple4<int[],Integer,Character,boolean[]>> , Serializable
+	{
+		public int compare( Tuple4<int[],Integer,Character,boolean[]> t1 , Tuple4<int[],Integer,Character,boolean[]> t2 )
+		{
+			return t1._1()[1] - t2._1()[1] ;
+		}
+	}
+	
+	private static class MatchSiteComp implements Comparator<Tuple2<Integer,String[]>> , Serializable
+	{
+		public int compare( Tuple2<Integer,String[]> t1 , Tuple2<Integer,String[]> t2 )
+		{
+			return t1._1().intValue() - t2._1().intValue() ;
+		}
+	}
+	
+	
+	/* --- MAIN ------------------------------------------------------------ */
 	
 	public static void main( String[] args )
 	{
+		// constants
+		final int[] alignScores = {5,-3,-4} ;	// {match,mismatch,gap}
+		final char[] alignTypes = {'a','i','d','-'} ;
 		
+		//final String[] seq = { "CGTGAATTCAT" , "GACTTAC" } ;	// {ref,in}
+		final String[] seq = { "ATGCAGAC" , "ACTCA" } ;
+		
+		System.out.println( "Reference = " + seq[0] ) ;
+		System.out.println( "Input = " + seq[1] ) ;
+		
+		// run algorithm
+		Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> result = 
+				new OptAlignments().call( seq , alignScores , alignTypes ) ;
+		
+		System.out.println( "	max score = " + result._1() ) ;
+		
+		for( Tuple2<Integer,String[]> tuple : result._2() )
+		{
+			System.out.println( "		index = " + tuple._2() ) ;
+			System.out.println( "		" + tuple._2()[0] ) ;
+			System.out.println( "		" + tuple._2()[1] ) ;
+			System.out.println( "" ) ;
+		}
 	}
 }
