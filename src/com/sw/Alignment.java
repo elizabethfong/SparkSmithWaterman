@@ -8,6 +8,7 @@ import java.util.Comparator ;
 import org.apache.spark.api.java.function.VoidFunction ;
 
 import scala.Tuple2 ;
+import scala.Tuple3 ;
 
 
 
@@ -15,8 +16,7 @@ import scala.Tuple2 ;
 public class Alignment 
 {
 	// CONSTANTS
-	private static final String FILE_REF = "/home/ubuntu/project/testRef/vertebrate_mammalian.107.rna.fna" ;
-	private static final String FILE_IN = "/home/ubuntu/project/testIn/test5.fa" ;
+	private static final String OUTPUT_EXT = ".txt" ;
 	
 	private static final int[] ALIGN_SCORES = {5,-3,-4} ;	// {match,mismatch,gap}
 	private static final char[] ALIGN_TYPES = {'a','i','d','-'} ;
@@ -34,28 +34,43 @@ public class Alignment
 	/**
 	 * DISTRIBUTE ALGORITHM
 	 * 
-	 * @param args ( RefDir , InDir , OutputDir , outputFileName , Iterations , TimeFile )
+	 * @param args ( RefDir , InDir , OutputDir , outputFileName )
 	 */
 	public static class DistributeAlgorithm implements VoidFunction<String[]>
 	{
 		public void call( String[] args )
 		{
-			/*
+			// VARIABLES
 			DirectoryCrawler inDir = new DirectoryCrawler( args[1] ) ;
+			DirectoryCrawler refDir ;
 			
+			int inputNum = 0;
+			
+			
+			// RUN!!
 			while( inDir.hasNext() )
-			{
-				DirectoryCrawler refDir = DirectoryCrawler( )
+			{	
+				inputNum ++ ;
 				
-				while( ref)
-					*/
-					// MAX - Bookkeeping
-					int max = 0 ;
-					ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> opt = new ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>() ;
+				ArrayList<String> reads = new InOutOps.GetReads().call( inDir.next() , DELIMITER ) ;
 				
-					ArrayList<String[]> refSeqs = new InOutOps.GetRefSeqs().call( FILE_REF , DELIMITER ) ;
-					ArrayList<String> reads = new InOutOps.GetReads().call( FILE_IN , DELIMITER ) ;
-									
+				int numReads = reads.size() ;
+				int numRefs = 0 ;
+				long execTime = System.currentTimeMillis() ;
+				
+				refDir = new DirectoryCrawler( args[0] ) ;
+				
+				
+				// MAX - Bookkeeping
+				int max = 0 ;
+				ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> opt = new ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>() ;
+				
+				
+				// RUN!!
+				while( refDir.hasNext() )
+				{
+					ArrayList<String[]> refSeqs = new InOutOps.GetRefSeqs().call( refDir.next() , DELIMITER ) ;
+					numRefs += refSeqs.size() ;
 					
 					// COMPARISON
 					for( String[] ref : refSeqs )
@@ -90,12 +105,21 @@ public class Alignment
 						}
 						
 					}
-					
-					
-					// print max to file
-					opt.sort( new OptSeqsComp() ) ;
-				/*}
-			}*/
+				}
+				
+				
+				// print to file
+				opt.sort( new OptSeqsComp() ) ;
+				execTime = System.currentTimeMillis() - execTime ;
+				
+				int[] nums = { numRefs , numReads } ;
+				Tuple3<int[],Integer,Long> tuple = new Tuple3<int[],Integer,Long>( nums , max , execTime ) ;
+				
+				String printStr = new InOutOps.GetOutputStr().call( reads , tuple , opt ) ;
+				String filepath = args[2] + "/" + args[3] + inputNum + OUTPUT_EXT ;
+				
+				new InOutOps.PrintStrToFile().call( filepath , printStr ) ;
+			}
 		}
 	}
 	

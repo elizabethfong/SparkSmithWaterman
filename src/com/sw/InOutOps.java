@@ -12,6 +12,9 @@ import java.util.Scanner ;
 import org.apache.spark.api.java.function.Function2 ;
 import org.apache.spark.api.java.function.Function3 ;
 
+import scala.Tuple2 ;
+import scala.Tuple3 ;
+
 
 @SuppressWarnings( "serial" )
 public class InOutOps
@@ -21,15 +24,15 @@ public class InOutOps
 	
 	/* --- INPUT ----------------------------------------------------------- */
 	
-	public static class GetReads implements Function2< String , String , ArrayList<String> >
+	public static class GetReads implements Function2< File , String , ArrayList<String> >
 	{
-		public ArrayList<String> call( String filepath , String delimiter )
+		public ArrayList<String> call( File file , String delimiter )
 		{
 			ArrayList<String> reads = new ArrayList<String>() ;
 			
 			try
 			{
-				Scanner scanner = new Scanner( new File(filepath) ) ;
+				Scanner scanner = new Scanner( file ) ;
 				
 				// first line - may contain metadata
 				String line = scanner.nextLine().trim() ;
@@ -54,15 +57,15 @@ public class InOutOps
 		}
 	}
 	
-	public static class GetRefSeqs implements Function2< String , String , ArrayList<String[]> >
+	public static class GetRefSeqs implements Function2< File , String , ArrayList<String[]> >
 	{
-		public ArrayList<String[]> call( String filepath , String delimiter )
+		public ArrayList<String[]> call( File file , String delimiter )
 		{
 			ArrayList<String[]> sequences = new ArrayList<String[]>() ;
 			
 			try
 			{
-				Scanner scanner = new Scanner( new File(filepath) ) ;
+				Scanner scanner = new Scanner( file ) ;
 				
 				String[] ref = null ;
 				StringBuilder seq = null ;
@@ -115,7 +118,7 @@ public class InOutOps
 	
 	/* --- OUTPUT ---------------------------------------------------------- */
 	
-	public static class PrintToFile implements Function2< String , String , Boolean >
+	public static class PrintStrToFile implements Function2< String , String , Boolean >
 	{
 		public Boolean call( String filepath , String data )
 		{
@@ -141,6 +144,21 @@ public class InOutOps
 			}
 		}
 	}
+	
+	public static class GetOutputStr 
+			 implements Function3< ArrayList<String> , Tuple3<int[],Integer,Long> , 
+			 					   ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> ,
+			 					   String >
+	{
+		public String call( ArrayList<String> reads , Tuple3<int[],Integer,Long> data , 
+							ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> opt )
+		{
+			return "return string here" ;
+		}
+	}
+	
+	
+	
 	
 	public static class PrintMatrices implements Function3< int[][] , char[][] , String[] , String >
 	{
@@ -213,6 +231,7 @@ public class InOutOps
 			return str.toString() ;
 		}
 	}
+	
 	
 	
 	/* --- UTILITY --------------------------------------------------------- */

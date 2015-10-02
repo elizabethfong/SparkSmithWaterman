@@ -32,11 +32,28 @@ import scala.Tuple5 ;
 @SuppressWarnings( "serial" )
 public class GeneAlignment 
 {
+	// FILE VARIABLES
+	final static String REF_240 = "/home/ubuntu/project/testRef/vertebrate_mammalian.415.rna.fna" ;
+	final static String REF_121 = "/home/ubuntu/project/testRef/vertebrate_mammalian.432.rna.fna" ;
+	final static String REF_100 = "/home/ubuntu/project/testRef/vertebrate_mammalian.95.rna.fna" ;
+	final static String REF_85 = "/home/ubuntu/project/testRef/vertebrate_mammalian.107.rna.fna" ;
+	final static String REF_70 = "/home/ubuntu/project/testRef/vertebrate_mammalian.123.rna.fna" ;
+	final static String REF_50 = "/home/ubuntu/project/testRef/vertebrate_mammalian.436.rna.fna" ;
+	final static String REF_30K = "/home/ubuntu/project/testRef/vertebrate_mammalian.129.rna.fna" ;
+	
+	final static String IN_240 = "/home/ubuntu/project/input/test1.fa" ;
+	final static String IN_121 = "/home/ubuntu/project/input/test2.fa" ;
+	final static String IN_100 = "/home/ubuntu/project/input/test7.fa" ;
+	final static String IN_85 = "/home/ubuntu/project/input/test5.fa" ;
+	final static String IN_70 = "/home/ubuntu/project/input/test4.fa" ;
+	final static String IN_50 = "/home/ubuntu/project/input/test3.fa" ;
+	final static String IN_30K = "/home/ubuntu/project/input/test6.fa" ;
+	
 	public static void main( String[] args )
 	{
 		// CONSTANTS
-		final String FILE_REF = "/home/ubuntu/project/testRef/vertebrate_mammalian.107.rna.fna" ;
-		final String FILE_IN = "/home/ubuntu/project/testIn/test5.fa" ;
+		final String FILE_REF = REF_85 ;
+		final String FILE_IN = IN_85 ;
 		
 		final int[] ALIGN_SCORES = {5,-3,-4} ;	// {match,mismatch,gap}
 		final char[] ALIGN_TYPES = {'a','i','d','-'} ;
@@ -215,11 +232,14 @@ public class GeneAlignment
 			JavaPairRDD<Integer,Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>> swRDD = refRDD.mapToPair( new MapRef() ) ;
 			
 			// extract info and reduce -> hopefully actions
+			//swRDD = swRDD.sortByKey(false) ;
+			//swRDD.saveAsTextFile( "troubleshoot.txt" );
 			Integer max = swRDD.keys().max( new IntComparator() ) ;
 			List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>> maxSeq = swRDD.lookup(max) ;
 			swRDD = null ;
 			
 			// return!
+			//return null ;
 			return new Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>>( max , maxSeq ) ;
 		}
 	}
