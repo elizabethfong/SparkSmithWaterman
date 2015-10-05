@@ -6,6 +6,8 @@ import java.io.FileNotFoundException ;
 import java.io.FileWriter ;
 import java.io.IOException ;
 
+import java.lang.StringBuilder ;
+
 import java.util.ArrayList ;
 import java.util.Scanner ;
 
@@ -20,6 +22,7 @@ import scala.Tuple3 ;
 public class InOutOps
 {
 	public static final String NEWLINE = System.lineSeparator() ;
+	public static final String TAB = "	" ;
 	
 	
 	/* --- INPUT ----------------------------------------------------------- */
@@ -153,7 +156,48 @@ public class InOutOps
 		public String call( ArrayList<String> reads , Tuple3<int[],Integer,Long> data , 
 							ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> opt )
 		{
-			return "return string here" ;
+			StringBuilder str = new StringBuilder() ;
+			
+			// execution time
+			str.append( "Execution Time = " + data._3() + " ms" + NEWLINE ) ;
+			str.append( NEWLINE ) ;
+			
+			// num reference and reads
+			str.append( "# Reference Sequences = " + data._1()[0] + NEWLINE ) ;
+			str.append( "# Reads = " + data._1()[1] + NEWLINE ) ;
+			str.append( NEWLINE ) ;
+			
+			// Input
+			str.append( "Input:" + NEWLINE ) ;
+			for( String read : reads )
+				str.append( read + NEWLINE ) ;
+			str.append( NEWLINE ) ;
+			
+			// max score
+			str.append( "Maximum alignment score = " + data._2() ) ;
+			str.append( NEWLINE ) ;
+			
+			// print sequences & matching sites
+			for( Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>> seq : opt )
+			{
+				str.append( "Reference:" + NEWLINE ) ;
+				str.append( seq._1()[0] + NEWLINE ) ;
+				str.append( seq._1()[1] + NEWLINE ) ;
+				str.append( NEWLINE ) ;
+				
+				// matching sites
+				ArrayList<Tuple2<Integer,String[]>> sites = seq._2() ;
+				
+				for( Tuple2<Integer,String[]> site : sites )
+				{
+					str.append( TAB + "Index = " + site._1() + NEWLINE ) ;
+					str.append( TAB + site._2()[0] + NEWLINE ) ;
+					str.append( TAB + site._2()[1] + NEWLINE ) ;
+					str.append( NEWLINE ) ;
+				}
+			}
+			
+			return str.toString() ;
 		}
 	}
 	

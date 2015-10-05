@@ -52,8 +52,8 @@ public class GeneAlignment
 	public static void main( String[] args )
 	{
 		// CONSTANTS
-		final String FILE_REF = REF_85 ;
-		final String FILE_IN = IN_85 ;
+		final String FILE_REF = REF_100 ;
+		final String FILE_IN = IN_100 ;
 		
 		final int[] ALIGN_SCORES = {5,-3,-4} ;	// {match,mismatch,gap}
 		final char[] ALIGN_TYPES = {'a','i','d','-'} ;
@@ -102,7 +102,7 @@ public class GeneAlignment
 	{
 		public void call( Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>> tuple )
 		{
-			final String OUTPUT_FILE = "results.txt" ;
+			final String OUTPUT_FILE = "/home/ubuntu/project/output/reference/results.txt" ;
 			final String NEWLINE = System.lineSeparator() ;
 			
 			StringBuilder str = new StringBuilder() ;

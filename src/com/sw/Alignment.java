@@ -22,12 +22,18 @@ public class Alignment
 	private static final char[] ALIGN_TYPES = {'a','i','d','-'} ;
 	private static final String DELIMITER = ">gi" ;
 	
-	private static final String APP_NAME = "Smith-Waterman in Spark" ;
+	// defaults
+	private static final String REF_DIR = "/home/ubuntu/project/ref1" ;
+	private static final String IN_DIR = "/home/ubuntu/project/input1" ;
+	private static final String OUT_DIR = "/home/ubuntu/project/output/algorithm" ;
+	
+	private static final String OUT_FILE = "result" ;
 	
 	
 	public static void main( String[] args )
 	{
-		// TODO main - code here
+		String[] dat = { REF_DIR , IN_DIR , OUT_DIR , OUT_FILE } ;
+		new DistributeAlgorithm().call( dat ) ;
 	}
 	
 	
@@ -109,8 +115,8 @@ public class Alignment
 				
 				
 				// print to file
-				opt.sort( new OptSeqsComp() ) ;
 				execTime = System.currentTimeMillis() - execTime ;
+				opt.sort( new OptSeqsComp() ) ;
 				
 				int[] nums = { numRefs , numReads } ;
 				Tuple3<int[],Integer,Long> tuple = new Tuple3<int[],Integer,Long>( nums , max , execTime ) ;

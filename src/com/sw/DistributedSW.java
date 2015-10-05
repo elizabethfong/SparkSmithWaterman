@@ -26,7 +26,6 @@ import scala.Tuple5 ;
 @SuppressWarnings( "serial" ) 
 public class DistributedSW 
 {
-	private static final String TIME_FILE = "" ;
 	
 	/* --- PUBLIC METHODS -------------------------------------------------- */
 	
