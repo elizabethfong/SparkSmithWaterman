@@ -8,8 +8,16 @@ Elizabeth Fong
 * [Background](http://github.com/elizabethfong/SparkSmithWaterman#background)  
 * [Development Tools](http://github.com/elizabethfong/SparkSmithWaterman#development-tools) 
 * [Data Source](http://github.com/elizabethfong/SparkSmithWaterman#data-source)  
-* [Algorithm Pseudocode](http://github.com/elizabethfong/SparkSmithWaterman#algorithm-pseudocode)  
+* [Algorithm Pseudocode](http://github.com/elizabethfong/SparkSmithWaterman#algorithm-pseudocode)
+   * Matrix Generation and Filling
+   * Extracting Optimal Alignments from Completed Matrix
 * [Parallelization](http://github.com/elizabethfong/SparkSmithWaterman#parallelization)
+   * [Parallelize Reference Set](https://github.com/elizabethfong/SparkSmithWaterman#parallelize-reference-set)
+      * Pseudocode - General Method
+      * Pseudocode - Map Function
+   * [Parallelize Algorithm](https://github.com/elizabethfong/SparkSmithWaterman#parallelize-algorithm)
+      * Pseudocode - General Method
+      * Pseudocode - Parallelized Smith-Waterman Algorithm
 
 ## Background
 The Smith-Waterman genetic alignment algorithm is used as a base in many other algorithms, such as the widely-used BLAST algorithm. These algorithms are used to match an input, to a reference set of genomic sequences, to find sequences which best-match the input, and the locations in which the sequences align.  
@@ -23,7 +31,7 @@ The input may be in a variety of file formats, one of which is the FASTA format,
 * Maven (for dependencies)
 
 ## Data Source
-[National Center for Biotechnology Information](ftp://ftp.ncbi.nlm.nih.gov/refseq/release)
+**[National Center for Biotechnology Information](ftp://ftp.ncbi.nlm.nih.gov/refseq/release)**
 * total number of files = **518**
 * total number of sequences = **12,321,160**
 * total number of base pairs = **26,623,169,330**
@@ -172,7 +180,7 @@ The input may be in a variety of file formats, one of which is the FASTA format,
 * Slower
 * Uses less memory
 
-**General Method**
+**Pseudocode - General Method**
 
     Given: List of reference sequences, refs (has m sequences)  
     Given: List of reads of an input (has n reads)
@@ -207,7 +215,7 @@ The input may be in a variety of file formats, one of which is the FASTA format,
         // return
         return { max , optSeqs } 
 
-**Parallelized Smith-Waterman Algorithm**
+**Pseudocode - Parallelized Smith-Waterman Algorithm**
 
     Given: String ref (length m), String read (length n) 
         
