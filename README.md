@@ -5,13 +5,13 @@ Elizabeth Fong
 [Link to Demo](http://www.slideshare.net/ElizabethWaiMingFong/week-4-53376723)  
 
 ## Contents  
-* [Background](http://github.com/elizabethfong/SparkSmithWaterman#background)  
-* [Development Tools](http://github.com/elizabethfong/SparkSmithWaterman#development-tools) 
-* [Data Source](http://github.com/elizabethfong/SparkSmithWaterman#data-source)  
-* [Algorithm Pseudocode](http://github.com/elizabethfong/SparkSmithWaterman#algorithm-pseudocode)
+* [Background](https://github.com/elizabethfong/SparkSmithWaterman#background)  
+* [Development Tools](https://github.com/elizabethfong/SparkSmithWaterman#development-tools) 
+* [Data Source](https://github.com/elizabethfong/SparkSmithWaterman#data-source)  
+* [Algorithm Pseudocode](https://github.com/elizabethfong/SparkSmithWaterman#algorithm-pseudocode)
    * Matrix Generation and Filling
    * Extracting Optimal Alignments from Completed Matrix
-* [Parallelization](http://github.com/elizabethfong/SparkSmithWaterman#parallelization)
+* [Parallelization](https://github.com/elizabethfong/SparkSmithWaterman#parallelization)
    * [Parallelize Reference Set](https://github.com/elizabethfong/SparkSmithWaterman#parallelize-reference-set)
       * Pseudocode - General Method
       * Pseudocode - Map Function
