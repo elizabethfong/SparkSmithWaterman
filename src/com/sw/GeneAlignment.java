@@ -53,7 +53,7 @@ public class GeneAlignment
 	{
 		// CONSTANTS
 		final String FILE_REF = REF_100 ;
-		final String FILE_IN = IN_100 ;
+		final String FILE_IN = IN_85 ;
 		
 		final int[] ALIGN_SCORES = {5,-3,-4} ;	// {match,mismatch,gap}
 		final char[] ALIGN_TYPES = {'a','i','d','-'} ;
@@ -77,7 +77,7 @@ public class GeneAlignment
 		
 		// parallelise reads
 		Tuple3<JavaSparkContext,int[],char[]> info = new Tuple3<JavaSparkContext,int[],char[]>( sc , ALIGN_SCORES , ALIGN_TYPES ) ;
-		Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>> result = new Distribute().call( refSeqs , reads , info ) ;
+		Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>> result = new Distribute().call( refSeqs , reads , info ) ;
 		
 		info = null ;
 		refSeqs = null ;
@@ -88,8 +88,8 @@ public class GeneAlignment
 		long execTime = endTime - startTime ;
 		
 		// print result
-		Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>> toPrint = 
-				new Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>>( execTime , sizes , reads , result._1() , result._2() ) ;
+		Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>> toPrint = 
+				new Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>>( execTime , sizes , reads , result._1() , result._2() ) ;
 		
 		reads = null ;
 		result = null ;
@@ -98,9 +98,9 @@ public class GeneAlignment
 	}
 	
 	
-	private static class PrintResult implements VoidFunction<Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>>>
+	private static class PrintResult implements VoidFunction<Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>>>
 	{
-		public void call( Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>> tuple )
+		public void call( Tuple5<Long,int[],ArrayList<String>,Integer,List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>> tuple )
 		{
 			final String OUTPUT_FILE = "/home/ubuntu/project/output/reference/results.txt" ;
 			final String NEWLINE = System.lineSeparator() ;
@@ -112,7 +112,7 @@ public class GeneAlignment
 			int[] sizes = tuple._2() ;
 			ArrayList<String> reads = tuple._3() ;
 			Integer maxScore = tuple._4() ;
-			List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>> seqs = tuple._5() ;
+			List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> seqs = tuple._5() ;
 			tuple = null ;
 			
 			// print sizes
@@ -140,11 +140,11 @@ public class GeneAlignment
 			maxScore = null ;
 			
 			// print sequences and binding sites
-			for( Tuple2<String[],ArrayList<Tuple2<String[],Integer>>> seq : seqs )
+			for( Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>> seq : seqs )
 			{
 				// tuple information
 				String[] refSeq = seq._1() ;
-				ArrayList<Tuple2<String[],Integer>> sites = seq._2() ;
+				ArrayList<Tuple2<Integer,String[]>> sites = seq._2() ;
 				sites.sort( new BindingSiteSorter() ) ;
 				
 				// print ref seq info
@@ -153,11 +153,11 @@ public class GeneAlignment
 				str.append( NEWLINE ) ;
 				
 				// print binding sites
-				for( Tuple2<String[],Integer> site : sites )
+				for( Tuple2<Integer,String[]> site : sites )
 				{
-					str.append( "Index = " + site._2() + NEWLINE ) ;
-					str.append( site._1()[0] + NEWLINE ) ;
-					str.append( site._1()[1] + NEWLINE ) ;
+					str.append( "Index = " + site._1() + NEWLINE ) ;
+					str.append( site._2()[0] + NEWLINE ) ;
+					str.append( site._2()[1] + NEWLINE ) ;
 					str.append( NEWLINE ) ;
 				}
 				
@@ -186,11 +186,11 @@ public class GeneAlignment
 		}
 	}
 	
-	private static class BindingSiteSorter implements Comparator<Tuple2<String[],Integer>> , Serializable
+	private static class BindingSiteSorter implements Comparator<Tuple2<Integer,String[]>> , Serializable
 	{
-		public int compare( Tuple2<String[],Integer> tuple1 , Tuple2<String[],Integer> tuple2 )
+		public int compare( Tuple2<Integer,String[]> tuple1 , Tuple2<Integer,String[]> tuple2 )
 		{
-			return tuple1._2().intValue() - tuple2._2().intValue() ;
+			return tuple1._1().intValue() - tuple2._1().intValue() ;
 		}
 	}
 	
@@ -206,9 +206,9 @@ public class GeneAlignment
 	 * @return the result string
 	 */
 	private static class Distribute 
-			  implements Function3< ArrayList<String[]> , ArrayList<String> , Tuple3<JavaSparkContext,int[],char[]> , Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>> >
+			  implements Function3< ArrayList<String[]> , ArrayList<String> , Tuple3<JavaSparkContext,int[],char[]> , Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>> >
 	{
-		public Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>> call( ArrayList<String[]> refSeqs , ArrayList<String> reads , Tuple3<JavaSparkContext,int[],char[]> info )
+		public Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>> call( ArrayList<String[]> refSeqs , ArrayList<String> reads , Tuple3<JavaSparkContext,int[],char[]> info )
 		{
 			// from info
 			JavaSparkContext sc = info._1() ;
@@ -229,25 +229,25 @@ public class GeneAlignment
 			list = null ;
 			
 			// apply sw function
-			JavaPairRDD<Integer,Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>> swRDD = refRDD.mapToPair( new MapRef() ) ;
+			JavaPairRDD<Integer,Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> swRDD = refRDD.mapToPair( new MapRef() ) ;
 			
 			// extract info and reduce -> hopefully actions
 			//swRDD = swRDD.sortByKey(false) ;
 			//swRDD.saveAsTextFile( "troubleshoot.txt" );
 			Integer max = swRDD.keys().max( new IntComparator() ) ;
-			List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>> maxSeq = swRDD.lookup(max) ;
+			List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> maxSeq = swRDD.lookup(max) ;
 			swRDD = null ;
 			
 			// return!
 			//return null ;
-			return new Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>>( max , maxSeq ) ;
+			return new Tuple2<Integer,List<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>>( max , maxSeq ) ;
 		}
 	}
 	
 	private static class MapRef 
-			  implements PairFunction< Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>> , Integer, Tuple2<String[],ArrayList<Tuple2<String[],Integer>>> >
+			  implements PairFunction< Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>> , Integer, Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>> >
 	{
-		public Tuple2<Integer,Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>> call( Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>> tuple )
+		public Tuple2<Integer,Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> call( Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>> tuple )
 		{
 			// vars from tuple
 			String[] ref = tuple._1() ;
@@ -258,12 +258,12 @@ public class GeneAlignment
 			
 			// run sw algorithm
 			int totalScore = 0 ;
-			ArrayList<Tuple2<String[],Integer>> bindingPts = new ArrayList<Tuple2<String[],Integer>>() ;
+			ArrayList<Tuple2<Integer,String[]>> bindingPts = new ArrayList<Tuple2<Integer,String[]>>() ;
 			
 			for( String read : reads )
 			{
 				String[] seqs = { ref[1] , read } ;
-				Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>> result = new SmithWaterman.OptAlignments().call( seqs , alignScores , alignTypes ) ;
+				Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> result = new SmithWaterman.OptAlignments().call( seqs , alignScores , alignTypes ) ;
 				
 				totalScore += result._1().intValue() ;
 				bindingPts.addAll( result._2() ) ;
@@ -275,12 +275,12 @@ public class GeneAlignment
 			
 			// return
 			Integer key = new Integer(totalScore) ;
-			Tuple2<String[],ArrayList<Tuple2<String[],Integer>>> value = new Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>( ref , bindingPts ) ;
+			Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>> value = new Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>( ref , bindingPts ) ;
 			
 			ref = null ;
 			bindingPts = null ;
 			
-			return new Tuple2<Integer,Tuple2<String[],ArrayList<Tuple2<String[],Integer>>>>( key , value ) ;
+			return new Tuple2<Integer,Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>>( key , value ) ;
 		}
 	}
 	

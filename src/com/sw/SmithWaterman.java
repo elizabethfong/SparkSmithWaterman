@@ -25,13 +25,13 @@ public class SmithWaterman
 	 * @return 
 	 */
 	public static class OptAlignments 
-			 implements Function3< String[] , int[] , char[] , Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>> >
+			 implements Function3< String[] , int[] , char[] , Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> >
 	{
-		public Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>> call( String[] seq , int[] alignScores , char[] alignTypes )
+		public Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> call( String[] seqs , int[] alignScores , char[] alignTypes )
 		{
 			// VARIABLES
-			String refSeq = seq[0] ;	// j
-			String inSeq = seq[1] ;		// i
+			String refSeq = seqs[0] ;	// j
+			String inSeq = seqs[1] ;		// i
 			
 			int[][] scores = new int[inSeq.length()+1][refSeq.length()+1] ;
 			char[][] aligns = new char[inSeq.length()+1][refSeq.length()+1] ;
@@ -43,7 +43,7 @@ public class SmithWaterman
 			Tuple2<int[][],char[][]> matrices = new Tuple2<int[][],char[][]>( scores , aligns ) ;
 			Tuple2<int[],char[]> alignInfo = new Tuple2<int[],char[]>( alignScores , alignTypes ) ;
 			
-			Tuple4<int[][],char[][],ArrayList<int[]>,Integer> result1 = new ScoreMatrix().call( matrices , seq , alignInfo ) ;
+			Tuple4<int[][],char[][],ArrayList<int[]>,Integer> result1 = new ScoreMatrix().call( matrices , seqs , alignInfo ) ;
 			
 			scores = null ;
 			inSeq = null ;
@@ -52,13 +52,9 @@ public class SmithWaterman
 			// step 2: backtrack from cells w/ max scores to find opt alignments
 			matrices = new Tuple2<int[][],char[][]>( result1._1() , result1._2() ) ;
 			ArrayList<int[]> maxCells = result1._3() ;
-			Tuple2<String[],char[]> matrixInfo = new Tuple2<String[],char[]>( seq , alignTypes ) ;
+			Tuple2<String[],char[]> matrixInfo = new Tuple2<String[],char[]>( seqs , alignTypes ) ;
 			
-			
-				//SmithWaterman.printMatrices(matrices._1(), matrices._2(), seq);
-			
-			
-			ArrayList<Tuple2<String[],Integer>> opt = new ArrayList<Tuple2<String[],Integer>>(maxCells.size()) ;
+			ArrayList<Tuple2<Integer,String[]>> opt = new ArrayList<Tuple2<Integer,String[]>>(maxCells.size()) ;
 			
 			for( int[] cell : maxCells )
 			{
@@ -69,7 +65,7 @@ public class SmithWaterman
 			matrices = null ;
 			matrixInfo = null ;
 			
-			return new Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>>( result1._4() , opt ) ;
+			return new Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>>( result1._4() , opt ) ;
 		}
 	}
 	
@@ -253,9 +249,9 @@ public class SmithWaterman
 	 * @return { {ref,in} , j } - j starts from 1
 	 */
 	private static class GetAlignment 
-			  implements Function3< int[] , Tuple2<String[],char[]> , Tuple2<int[][],char[][]> , Tuple2<String[],Integer>>
+			  implements Function3< int[] , Tuple2<String[],char[]> , Tuple2<int[][],char[][]> , Tuple2<Integer,String[]> >
 	{
-		public Tuple2<String[],Integer> call( int[] cell , Tuple2<String[],char[]> matrixInfo , Tuple2<int[][],char[][]> matrices )
+		public Tuple2<Integer,String[]> call( int[] cell , Tuple2<String[],char[]> matrixInfo , Tuple2<int[][],char[][]> matrices )
 		{
 			final char GAP_CHAR = '_' ;
 			
@@ -336,7 +332,7 @@ public class SmithWaterman
 			ref = null ;
 			in = null ;
 			
-			return new Tuple2<String[],Integer>( alignedSeq , new Integer(beginning) ) ;
+			return new Tuple2<Integer,String[]>( new Integer(beginning) , alignedSeq ) ;
 		}
 	}
 	
@@ -424,16 +420,16 @@ public class SmithWaterman
 		System.out.println( "Input = " + seq[1] ) ;
 		
 		// run algorithm
-		Tuple2<Integer,ArrayList<Tuple2<String[],Integer>>> result = 
+		Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> result = 
 				new OptAlignments().call( seq , alignScores , alignTypes ) ;
 		
 		System.out.println( "	max score = " + result._1() ) ;
 		
-		for( Tuple2<String[],Integer> tuple : result._2() )
+		for( Tuple2<Integer,String[]> tuple : result._2() )
 		{
-			System.out.println( "		index = " + tuple._2() ) ;
-			System.out.println( "		" + tuple._1()[0] ) ;
-			System.out.println( "		" + tuple._1()[1] ) ;
+			System.out.println( "		index = " + tuple._1() ) ;
+			System.out.println( "		" + tuple._2()[0] ) ;
+			System.out.println( "		" + tuple._2()[1] ) ;
 			System.out.println( "" ) ;
 		}
 	}
