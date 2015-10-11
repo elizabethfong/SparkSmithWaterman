@@ -6,6 +6,7 @@ import java.util.ArrayList ;
 import java.util.Comparator ;
 
 import org.apache.spark.SparkConf ;
+
 import org.apache.spark.api.java.JavaPairRDD ;
 import org.apache.spark.api.java.JavaRDD ;
 import org.apache.spark.api.java.JavaSparkContext ;
@@ -19,10 +20,13 @@ import scala.Tuple3 ;
 
 
 /**
- * Written in functional Spark
+ * <p>Runs the Smith-Waterman genetic alignment algorithm with different distribution methods. <br />
+ * Implemented methods: distribute algorithm, distribute reference dataset, no distribution <br />
+ * To do: distribute reads
+ * </p>
  * 
  * @author Elizabeth
- * @version 
+ * @version Insight Data Engineering NY, September-October 2015
  */
 @SuppressWarnings( "serial" ) 
 public class Distribution 
