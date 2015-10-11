@@ -12,20 +12,28 @@ import java.util.ArrayList ;
 import java.util.Stack ;
 
 
+/**
+ * TODO
+ * Written in functional Spark.
+ * 
+ * @author Elizabeth Fong
+ * @version Insight Data Engineering NY, September-October 2015
+ */
 @SuppressWarnings( "serial" ) 
 public class SmithWaterman 
 {
+	/* --- PUBLIC METHODS -------------------------------------------------- */
 	
 	/**
+	 * TODO
 	 * 
-	 * @param seq
-	 * @param alignScore
-	 * @param alignTypes
+	 * @param seq			
+	 * @param alignScore	
+	 * @param alignTypes	
 	 * 
-	 * @return 
+	 * @return 				
 	 */
-	public static class OptAlignments 
-			 implements Function3< String[] , int[] , char[] , Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> >
+	public static class OptAlignments implements Function3< String[] , int[] , char[] , Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> >
 	{
 		public Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> call( String[] seqs , int[] alignScores , char[] alignTypes )
 		{
@@ -69,13 +77,17 @@ public class SmithWaterman
 		}
 	}
 	
+	
+	/* --- MATRIX SCORING -------------------------------------------------- */
+	
 	/**
+	 * TODO
 	 * 
-	 * @param matrices {scoreMatrix,alignTypeMatrix}
-	 * @param seq {refSeq,inSeq}
-	 * @param alignInfo { {Match,Mismatch,Gap} , {align,insert,delete} }
+	 * @param matrices 	{scoreMatrix,alignTypeMatrix}
+	 * @param seq 		{refSeq,inSeq}
+	 * @param alignInfo	{ {Match,Mismatch,Gap} , {align,insert,delete} }
 	 *
-	 * @return cells with max score
+	 * @return			cells with max score
 	 */
 	private static class ScoreMatrix 
 			 implements Function3< Tuple2<int[][],char[][]> , String[] , Tuple2<int[],char[]> , 
@@ -150,15 +162,14 @@ public class SmithWaterman
 		}
 	}
 	
-	
 	/**
+	 * TODO
 	 * 
+	 * @param cellScores	{NW,N,W}
+	 * @param bases			{RefBase,InputBase}
+	 * @param alignInfo		{ {Match,Mismatch,Gap} , {align,insert,delete} }
 	 * 
-	 * @param cellScores {NW,N,W}
-	 * @param bases {RefBase,InputBase}
-	 * @param alignInfo { {Match,Mismatch,Gap} , {align,insert,delete} }
-	 * 
-	 * @return {score,alignType}
+	 * @return				{score,alignType}
 	 */
 	private static class GetCellScore implements Function3< int[] , char[] , Tuple2<int[],char[]> , Tuple2<Integer,Character> > 
 	{
@@ -240,16 +251,18 @@ public class SmithWaterman
 	}
 	
 	
+	/* --- GET OPT ALIGNMENT ----------------------------------------------- */
+	
 	/**
+	 * TODO
 	 * 
-	 * @param cell {i,j} of starting cell
-	 * @param matrixInfo { {refSeq,inSeq} , {align,ins,del} }
-	 * @param matrices {scoreMatrix,alignTypeMatrix}
+	 * @param cell			{i,j} of starting cell
+	 * @param matrixInfo	{ {refSeq,inSeq} , {align,ins,del} }
+	 * @param matrices		{scoreMatrix,alignTypeMatrix}
 	 * 
-	 * @return { {ref,in} , j } - j starts from 1
+	 * @return				{ {ref,in} , j } - j starts from 1
 	 */
-	private static class GetAlignment 
-			  implements Function3< int[] , Tuple2<String[],char[]> , Tuple2<int[][],char[][]> , Tuple2<Integer,String[]> >
+	private static class GetAlignment implements Function3< int[] , Tuple2<String[],char[]> , Tuple2<int[][],char[][]> , Tuple2<Integer,String[]> >
 	{
 		public Tuple2<Integer,String[]> call( int[] cell , Tuple2<String[],char[]> matrixInfo , Tuple2<int[][],char[][]> matrices )
 		{
@@ -333,104 +346,6 @@ public class SmithWaterman
 			in = null ;
 			
 			return new Tuple2<Integer,String[]>( new Integer(beginning) , alignedSeq ) ;
-		}
-	}
-	
-	
-	public static void printMatrices( int[][] scores , char[][] aligns , String[] seq )
-	{
-		String newline = System.lineSeparator() ;
-		StringBuilder str = new StringBuilder() ;
-		
-		String _seq1 = seq[1] ;
-		String _seq2 = seq[0] ;
-		
-		// score matrix
-		str.append( newline ) ;
-		str.append( "   _  " ) ;
-		
-		for( int i = 0 ; i < _seq2.length() ; i++ )
-		{
-			str.append( Character.toUpperCase(_seq2.charAt(i)) + "  " ) ;
-		}
-		
-		str.append( newline ) ;
-		
-		for( int i = 0 ; i < scores.length ; i++ )
-		{
-			if( i == 0 )
-				str.append( "_  " ) ;
-			else
-				str.append( Character.toUpperCase(_seq1.charAt(i-1)) + "  " ) ;
-			
-			for( int j = 0 ; j < scores[i].length ; j++ )
-			{
-				int score = scores[i][j] ;
-				
-				if( score < 10 )
-					str.append( score + "  " ) ;
-				else
-					str.append( score + " " ) ;
-			}
-			
-			str.append( newline ) ;
-		}
-		
-		str.append( newline ) ;
-		
-		// align type matrix
-		str.append( "   _  " ) ;
-		
-		for( int i = 0 ; i < _seq2.length() ; i++ )
-		{
-			str.append( Character.toUpperCase(_seq2.charAt(i)) + "  " ) ;
-		}
-		
-		str.append( newline ) ;
-		
-		for( int i = 0 ; i < aligns.length ; i++ )
-		{
-			if( i == 0 )
-				str.append( "_  " ) ;
-			else
-				str.append( Character.toUpperCase(_seq1.charAt(i-1)) + "  " ) ;
-			
-			for( int j = 0 ; j < aligns[i].length ; j++ )
-			{
-				str.append( aligns[i][j] + "  " ) ;
-			}
-			
-			str.append( newline ) ;
-		}
-		
-		System.out.println( str.toString() ) ;
-	}
-	
-	
-	public static void main( String[] args )
-	{
-		// constants
-		final int[] alignScores = {5,-3,-4} ;	// {match,mismatch,gap}
-		final char[] alignTypes = {'a','i','d','-'} ;
-		
-		//final String[] seq = { "CGTGAATTCAT" , "GACTTAC" } ;	// {ref,in}
-		final String[] seq = { "ATGCAGAC" , "ACTCA" } ;
-		
-		System.out.println( "Reference = " + seq[0] ) ;
-		System.out.println( "Input = " + seq[1] ) ;
-		
-		// run algorithm
-		Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> result = 
-				new OptAlignments().call( seq , alignScores , alignTypes ) ;
-		
-		System.out.println( "	max score = " + result._1() ) ;
-		
-		for( Tuple2<Integer,String[]> tuple : result._2() )
-		{
-			System.out.println( "		index = " + tuple._1() ) ;
-			System.out.println( "		" + tuple._2()[0] ) ;
-			System.out.println( "		" + tuple._2()[1] ) ;
-			System.out.println( "" ) ;
 		}
 	}
 }

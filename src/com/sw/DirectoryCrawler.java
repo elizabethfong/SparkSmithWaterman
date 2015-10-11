@@ -3,16 +3,26 @@ package com.sw ;
 import java.io.File ;
 
 /**
+ * TODO 
  * OOP Directory Crawler
  * 
  * @author Elizabeth Fong
- *
+ * @version Insight Data Engineering NY, September-October 2015
  */
 public class DirectoryCrawler
 {
+	// directory/file pointers
 	private Directory _root ;
 	private Directory _current ;
 	
+	
+	/* --- METHODS --------------------------------------------------------- */
+	
+	/**
+	 * TODO
+	 * 
+	 * @param root	
+	 */
 	public DirectoryCrawler( String root )
 	{
 		// error handling -> directory does not exist
@@ -29,11 +39,21 @@ public class DirectoryCrawler
 		_current = _root ;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return	
+	 */
 	public boolean hasNext()
 	{
 		return _current.hasNext() ;
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @return	
+	 */
 	public File next()
 	{
 		return _current.next() ;
@@ -42,15 +62,28 @@ public class DirectoryCrawler
 	
 	/* --- NODE CLASS ------------------------------------------------------ */
 	
+	/**
+	 * TODO
+	 * 
+	 * @author Elizabeth Fong
+	 * @version Insight Data Engineering NY, September-October 2015
+	 */
 	@SuppressWarnings("serial")
 	private class Directory extends File
 	{	
-		final Directory parent ;
-		File[] children ;
+		// pointers
+		private final Directory parent ;
+		private File[] children ;
 		
-		int index ;
+		private int index ;
 		
 		
+		/**
+		 * TODO 
+		 * 
+		 * @param path		
+		 * @param parent	
+		 */
 		private Directory( String path , Directory parent )
 		{
 			super( path ) ;
@@ -63,6 +96,11 @@ public class DirectoryCrawler
 			_current = this ;
 		}
 		
+		/**
+		 * TODO
+		 * 
+		 * @return	
+		 */
 		private boolean hasNext()
 		{
 			if( index > -1 )
@@ -97,6 +135,11 @@ public class DirectoryCrawler
 			return true ;
 		}
 		
+		/**
+		 * TODO
+		 * 
+		 * @return	
+		 */
 		private File next()
 		{
 			return children[index] ;

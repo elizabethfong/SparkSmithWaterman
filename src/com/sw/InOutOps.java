@@ -18,15 +18,31 @@ import scala.Tuple2 ;
 import scala.Tuple3 ;
 
 
+/**
+ * TODO
+ * Written in functional Spark.
+ * 
+ * @author Elizabeth Fong
+ * @version Insight Data Engineering NY, September-October 2015
+ */
 @SuppressWarnings( "serial" )
 public class InOutOps
 {
+	// Constants
 	public static final String NEWLINE = System.lineSeparator() ;
 	public static final String TAB = "	" ;
 	
 	
 	/* --- INPUT ----------------------------------------------------------- */
 	
+	/**
+	 * TODO
+	 * 
+	 * @param file		
+	 * @param delimiter	
+	 * 
+	 * @return			
+	 */
 	public static class GetReads implements Function2< File , String , ArrayList<String> >
 	{
 		public ArrayList<String> call( File file , String delimiter )
@@ -60,6 +76,14 @@ public class InOutOps
 		}
 	}
 	
+	/**
+	 * TODO
+	 * 
+	 * @param file		
+	 * @param delimiter	
+	 * 
+	 * @return			
+	 */
 	public static class GetRefSeqs implements Function2< File , String , ArrayList<String[]> >
 	{
 		public ArrayList<String[]> call( File file , String delimiter )
@@ -121,6 +145,14 @@ public class InOutOps
 	
 	/* --- OUTPUT ---------------------------------------------------------- */
 	
+	/**
+	 * TODO
+	 * 
+	 * @param filepath	
+	 * @param data		
+	 * 
+	 * @return			
+	 */
 	public static class PrintStrToFile implements Function2< String , String , Boolean >
 	{
 		public Boolean call( String filepath , String data )
@@ -148,13 +180,18 @@ public class InOutOps
 		}
 	}
 	
-	public static class GetOutputStr 
-			 implements Function3< ArrayList<String> , Tuple3<int[],Integer,Long> , 
-			 					   ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> ,
-			 					   String >
+	/**
+	 * TODO
+	 * 
+	 * @param reads	
+	 * @param data	
+	 * @param opt	
+	 * 
+	 * @return		
+	 */
+	public static class GetOutputStr implements Function3< ArrayList<String> , Tuple3<int[],Integer,Long> , ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> , String >
 	{
-		public String call( ArrayList<String> reads , Tuple3<int[],Integer,Long> data , 
-							ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> opt )
+		public String call( ArrayList<String> reads , Tuple3<int[],Integer,Long> data , ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> opt )
 		{
 			StringBuilder str = new StringBuilder() ;
 			
@@ -201,17 +238,23 @@ public class InOutOps
 		}
 	}
 	
-	
-	
-	
+	/**
+	 * TODO
+	 * 
+	 * @param scores	
+	 * @param aligns	
+	 * @param seqs		
+	 * 
+	 * @return			
+	 */
 	public static class PrintMatrices implements Function3< int[][] , char[][] , String[] , String >
 	{
-		public String call( int[][] scores , char[][] aligns , String[] seq )
+		public String call( int[][] scores , char[][] aligns , String[] seqs )
 		{
 			StringBuilder str = new StringBuilder() ;
 			
-			String _seq1 = seq[1] ;
-			String _seq2 = seq[0] ;
+			String _seq1 = seqs[1] ;
+			String _seq2 = seqs[0] ;
 			
 			// score matrix
 			str.append( NEWLINE ) ;
@@ -277,9 +320,16 @@ public class InOutOps
 	}
 	
 	
-	
 	/* --- UTILITY --------------------------------------------------------- */
 	
+	/**
+	 * TODO
+	 * 
+	 * @param line		
+	 * @param delimiter	
+	 * 
+	 * @return			
+	 */
 	private static class IsMetadata implements Function2< String , String , Boolean >
 	{
 		public Boolean call( String line , String delimiter )

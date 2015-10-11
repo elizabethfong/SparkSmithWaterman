@@ -29,6 +29,11 @@ import scala.Tuple2 ;
 import scala.Tuple3 ;
 import scala.Tuple5 ;
 
+/**
+ * TODO Remove after testing!!!
+ * 
+ * @author Elizabeth
+ */
 @SuppressWarnings( "serial" )
 public class GeneAlignment 
 {
