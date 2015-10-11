@@ -20,12 +20,12 @@ import scala.Tuple3 ;
 
 
 /**
- * <p>Runs the Smith-Waterman genetic alignment algorithm with different distribution methods. <br />
+ * <p>Runs the Smith-Waterman genetic alignment algorithm with different distribution methods. Written in functional Spark.<br />
  * Implemented methods: distribute algorithm, distribute reference dataset, no distribution <br />
  * To do: distribute reads
  * </p>
  * 
- * @author Elizabeth
+ * @author Elizabeth Fong
  * @version Insight Data Engineering NY, September-October 2015
  */
 @SuppressWarnings( "serial" ) 
