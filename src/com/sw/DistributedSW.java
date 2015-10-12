@@ -518,16 +518,16 @@ public class DistributedSW
 	/**
 	 * Calculates and returns the insertion or deletion score of a cell. Both scores are calculated in the same way.
 	 * 
-	 * @param surrScore	The north (insertion) or west (deletion) cell.
+	 * @param cellScore	The north (insertion) or west (deletion) cell.
 	 * @param gapScore	The gap score. Should be negative.
 	 * 
 	 * @return			The calculated insertion or deletion score.
 	 */
 	private static class InsDelScore implements Function2< Integer , Integer , Integer >
 	{
-		public Integer call( Integer surrScore , Integer gapScore )
+		public Integer call( Integer cellScore , Integer gapScore )
 		{
-			return surrScore + gapScore ;
+			return cellScore + gapScore ;
 		}
 	}
 	

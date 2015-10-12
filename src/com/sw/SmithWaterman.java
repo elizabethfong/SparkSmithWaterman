@@ -13,7 +13,8 @@ import java.util.Stack ;
 
 
 /**
- * TODO
+ * The Smith-Waterman genetic alignment algorithm.
+ * Not distributed.
  * Written in functional Spark.
  * 
  * @author Elizabeth Fong
@@ -25,13 +26,14 @@ public class SmithWaterman
 	/* --- PUBLIC METHODS -------------------------------------------------- */
 	
 	/**
-	 * TODO
+	 * Finds the best-match reference sequence(s) to the given read, using the Smith-Waterman algorithm.
+	 * Returns the alignment score and the optimal alignments.
 	 * 
-	 * @param seq			
-	 * @param alignScore	
-	 * @param alignTypes	
+	 * @param seqs			An array of {@link java.lang.String} elements of the sequences to be compared, in the order { reference , read }.
+	 * @param alignScores	An {@code int[]} of alignment scores used in the Smith-Waterman algorithm, in the order { match , mismatch , gap }.
+	 * @param alignTypes	A {@code char[]} of alignment types used in the Smith-Waterman algorithm, in the order { alignment , insertion , deletion , none }.
 	 * 
-	 * @return 				
+	 * @return				A {@link scala.Tuple2} of the alignment score and the optimal alignments.			
 	 */
 	public static class OptAlignments implements Function3< String[] , int[] , char[] , Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> >
 	{
@@ -39,27 +41,21 @@ public class SmithWaterman
 		{
 			// VARIABLES
 			String refSeq = seqs[0] ;	// j
-			String inSeq = seqs[1] ;		// i
+			String inSeq = seqs[1] ;	// i
 			
 			int[][] scores = new int[inSeq.length()+1][refSeq.length()+1] ;
 			char[][] aligns = new char[inSeq.length()+1][refSeq.length()+1] ;
 			
-			refSeq = null ;
-			inSeq = null ;
 			
 			// step 1: score matrix
 			Tuple2<int[][],char[][]> matrices = new Tuple2<int[][],char[][]>( scores , aligns ) ;
 			Tuple2<int[],char[]> alignInfo = new Tuple2<int[],char[]>( alignScores , alignTypes ) ;
 			
-			Tuple4<int[][],char[][],ArrayList<int[]>,Integer> result1 = new ScoreMatrix().call( matrices , seqs , alignInfo ) ;
+			Tuple2<Integer,ArrayList<int[]>> result1 = new ScoreMatrix().call( matrices , seqs , alignInfo ) ;
 			
-			scores = null ;
-			inSeq = null ;
-			matrices = null ;
 			
 			// step 2: backtrack from cells w/ max scores to find opt alignments
-			matrices = new Tuple2<int[][],char[][]>( result1._1() , result1._2() ) ;
-			ArrayList<int[]> maxCells = result1._3() ;
+			ArrayList<int[]> maxCells = result1._2() ;
 			Tuple2<String[],char[]> matrixInfo = new Tuple2<String[],char[]>( seqs , alignTypes ) ;
 			
 			ArrayList<Tuple2<Integer,String[]>> opt = new ArrayList<Tuple2<Integer,String[]>>(maxCells.size()) ;
@@ -69,11 +65,8 @@ public class SmithWaterman
 				opt.add( new GetAlignment().call(cell,matrixInfo,matrices) ) ;
 			}
 			
-			maxCells = null ;
-			matrices = null ;
-			matrixInfo = null ;
 			
-			return new Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>>( result1._4() , opt ) ;
+			return new Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>>( result1._1() , opt ) ;
 		}
 	}
 	
@@ -81,21 +74,20 @@ public class SmithWaterman
 	/* --- MATRIX SCORING -------------------------------------------------- */
 	
 	/**
-	 * TODO
+	 * Step 1 of the Smith-Waterman algorithm. Filling a matrix with scores and alignment information.
+	 * This step is distributed, but is not optimal.
 	 * 
-	 * @param matrices 	{scoreMatrix,alignTypeMatrix}
-	 * @param seq 		{refSeq,inSeq}
-	 * @param alignInfo	{ {Match,Mismatch,Gap} , {align,insert,delete} }
+	 * @param matrices	A {@link scala.Tuple2} of matrices to be filled. 
+	 * 					The matrices to be filled are an {@code int[][]} of scores and a {@code char[][]} of corresponding alignment types.
+	 * @param seqs		An array of {@link java.lang.String} elements of the sequences to be compared, in the order { reference , read }.
+	 * @param alignInfo	A {@link scala.Tuple2} of alignment information used in filling the given matrices, in the order { alignment scores , alignment types }.
 	 *
-	 * @return			cells with max score
+	 * @return			A {@link scala.Tuple2} of the maximum cell score and an {@link java.util.ArrayList} of coordinates of cells with this score.
+	 * 					The given matrices will be filled upon return.
 	 */
-	private static class ScoreMatrix 
-			 implements Function3< Tuple2<int[][],char[][]> , String[] , Tuple2<int[],char[]> , 
-			 					   Tuple4<int[][],char[][],ArrayList<int[]>,Integer> >
+	private static class ScoreMatrix implements Function3< Tuple2<int[][],char[][]> , String[] , Tuple2<int[],char[]> , Tuple2<Integer,ArrayList<int[]>> >
 	{
-		public Tuple4<int[][],char[][],ArrayList<int[]>,Integer> call( Tuple2<int[][],char[][]> matrices , 
-																	   String[] seq , 
-																	   Tuple2<int[],char[]> alignInfo )
+		public Tuple2<Integer,ArrayList<int[]>> call( Tuple2<int[][],char[][]> matrices , String[] seq , Tuple2<int[],char[]> alignInfo )
 		{
 			// variables
 			String refSeq = seq[0] ;	// j
@@ -103,9 +95,6 @@ public class SmithWaterman
 			
 			int[][] scores = matrices._1() ;
 			char[][] aligns = matrices._2() ;
-			
-			seq = null ;
-			matrices = null ;
 			
 			
 			// init matrices
@@ -158,18 +147,18 @@ public class SmithWaterman
 				}
 			}
 			
-			return new Tuple4<int[][],char[][],ArrayList<int[]>,Integer>( scores , aligns , maxCells , new Integer(maxScore) ) ;
+			return new Tuple2<Integer,ArrayList<int[]>>( new Integer(maxScore) , maxCells ) ;
 		}
 	}
 	
 	/**
-	 * TODO
+	 * Returns the cell score and alignment type in a {@link scala.Tuple2} for a given cell.
 	 * 
-	 * @param cellScores	{NW,N,W}
-	 * @param bases			{RefBase,InputBase}
-	 * @param alignInfo		{ {Match,Mismatch,Gap} , {align,insert,delete} }
+	 * @param cellScores	An {@code int[]} for the scores in the north-west, north, and west cells. Used in cell score calculation.
+	 * @param bases			A {@code char[]} of base pairs corresponding to this cell, in the order { reference , input }.
+	 * @param alignInfo		A {@link scala.Tuple2} of alignment information used in filling the given matrices, in the order { alignment scores , alignment types }.
 	 * 
-	 * @return				{score,alignType}
+	 * @return				A {@link scala.Tuple2} of the cell score and the alignment type.
 	 */
 	private static class GetCellScore implements Function3< int[] , char[] , Tuple2<int[],char[]> , Tuple2<Integer,Character> > 
 	{
@@ -200,7 +189,7 @@ public class SmithWaterman
 			
 			// alignment score
 			int[] aScores = {alignScores[0],alignScores[1]} ;
-			tmp = new AlignScore().call( new Integer(cellScores[0]) , aScores , bases ) ;
+			tmp = new AlignmentScore().call( new Integer(cellScores[0]) , bases , aScores ) ;
 			if( tmp >= max )
 			{
 				max = tmp ;
@@ -212,14 +201,14 @@ public class SmithWaterman
 	}
 	
 	/**
+	 * Calculates and returns the insertion or deletion score of a cell. Both scores are calculated in the same way.
 	 * 
+	 * @param cellScore	The north (insertion) or west (deletion) cell.
+	 * @param gapScore	The gap score. Should be negative.
 	 * 
-	 * @param cellScore Cell scores of N (insertion) or W (deletion) cells
-	 * @param gapScore
-	 * 
-	 * @return Score for insertion or deletion
+	 * @return			The calculated insertion or deletion score.
 	 */
-	private static class InsDelScore implements Function2<Integer,Integer,Integer>
+	private static class InsDelScore implements Function2< Integer , Integer , Integer >
 	{
 		public Integer call( Integer cellScore , Integer gapScore )
 		{	
@@ -228,25 +217,25 @@ public class SmithWaterman
 	}
 	
 	/**
+	 * Calculates and returns the score for an alignment of base pairs. May be a match or a mismatch of base pairs.
 	 * 
+	 * @param nwScore		The score for the northwest cell.
+	 * @param bases			A {@code char[]} of base pairs corresponding to the indices of this cell, in the form (reference,read).
+	 * @param alignScores	An {@code int[]} of alignment scores used in this algorithm, in the form (match,mismatch,gap).
 	 * 
-	 * @param nwCellScore Score of NW cell
-	 * @param alignScores {Match,Mismatch}
-	 * @param bases {refBase,inputBase}
-	 * 
-	 * @return Score for alignment (either match or mismatch)
+	 * @return				The score for an alignment of the base pairs corresponding to this cell.
 	 */
-	private static class AlignScore implements Function3< Integer , int[] , char[] , Integer > 
+	private static class AlignmentScore implements Function3< Integer , char[] , int[] , Integer >
 	{
-		public Integer call( Integer nwCellScore , int[] alignScores , char[] bases )
+		public Integer call( Integer nwScore , char[] bases , int[] alignScores )
 		{
 			char refBase = Character.toUpperCase( bases[0] ) ;
 			char inputBase = Character.toUpperCase( bases[1] ) ;
 			
 			if( refBase == inputBase )
-				return new Integer( nwCellScore.intValue() + alignScores[0] ) ;
+				return new Integer( nwScore.intValue() + alignScores[0] ) ;
 			else
-				return new Integer( nwCellScore.intValue() + alignScores[1] ) ;
+				return new Integer( nwScore.intValue() + alignScores[1] ) ;
 		}
 	}
 	
@@ -254,13 +243,16 @@ public class SmithWaterman
 	/* --- GET OPT ALIGNMENT ----------------------------------------------- */
 	
 	/**
-	 * TODO
+	 * Step 2 of the Smith-Waterman algorithm.
+	 * Given a starting cell, backtracks through the matrix to obtain an optimal alignment.
 	 * 
-	 * @param cell			{i,j} of starting cell
-	 * @param matrixInfo	{ {refSeq,inSeq} , {align,ins,del} }
-	 * @param matrices		{scoreMatrix,alignTypeMatrix}
+	 * @param cell			The {@code (i,j)} coordinates of the starting cell
+	 * @param matrixInfo	A {@link scala.Tuple2} of other data required to extract the optimal alignments. 
+	 * 						Contains the sequences in this comparison (reference,read), and the alignment types (alignment,insertion,deletion,none).
+	 * @param matrices		A {@link scala.Tuple2} of the {@code int[][]} of scores and the {@code char[][]} of corresponding alignment types, filled during Step 1.
 	 * 
-	 * @return				{ {ref,in} , j } - j starts from 1
+	 * @return				A {@link scala.Tuple2} of the index of the beginning of the alignment with respect to the reference sequence,
+	 * 						and how the sequences are aligned.
 	 */
 	private static class GetAlignment implements Function3< int[] , Tuple2<String[],char[]> , Tuple2<int[][],char[][]> , Tuple2<Integer,String[]> >
 	{
