@@ -19,7 +19,11 @@ import scala.Tuple3 ;
 
 
 /**
- * TODO
+ * Class of functions dealing with input and ouput, restricted to:
+ * reading from and writing to files, 
+ * formatting data into a {@link java.lang.String} for printing, and
+ * printing data to standard out.
+ * 
  * Written in functional Spark.
  * 
  * @author Elizabeth Fong
@@ -36,12 +40,12 @@ public class InOutOps
 	/* --- INPUT ----------------------------------------------------------- */
 	
 	/**
-	 * TODO
+	 * Extracts all reads from an input file and returns them, in order, in an {@link java.util.ArrayList}. 
 	 * 
-	 * @param file		
-	 * @param delimiter	
+	 * @param file		The input file.
+	 * @param delimiter	The {@link java.lang.String} which shows that a line in the file is metadata.
 	 * 
-	 * @return			
+	 * @return			An {@link java.util.ArrayList} of all reads from the given input file.
 	 */
 	public static class GetReads implements Function2< File , String , ArrayList<String> >
 	{
@@ -77,12 +81,14 @@ public class InOutOps
 	}
 	
 	/**
-	 * TODO
+	 * Extracts each reference sequence from a file of reference sequences and returns them,
+	 * in order, in an {@code ArrayList{String[]}, where each element has the form 
+	 * { metadata , sequence }.
 	 * 
-	 * @param file		
-	 * @param delimiter	
+	 * @param file		The file of reference sequences.
+	 * @param delimiter	The {@link java.lang.String} which separates a reference sequence from another.
 	 * 
-	 * @return			
+	 * @return			An {@link java.util.ArrayList} of all reference sequences in the given file.
 	 */
 	public static class GetRefSeqs implements Function2< File , String , ArrayList<String[]> >
 	{
@@ -146,12 +152,13 @@ public class InOutOps
 	/* --- OUTPUT ---------------------------------------------------------- */
 	
 	/**
-	 * TODO
+	 * Prints the given {@link java.lang.String} to the file with the given file path.
+	 * The directory in which the file is to reside in must exist.
 	 * 
-	 * @param filepath	
-	 * @param data		
+	 * @param filepath	The file path.
+	 * @param data		The data to be written to file.
 	 * 
-	 * @return			
+	 * @return			{@code true} if writing to file was successful, {@code false} otherwise.
 	 */
 	public static class PrintStrToFile implements Function2< String , String , Boolean >
 	{
@@ -181,13 +188,18 @@ public class InOutOps
 	}
 	
 	/**
-	 * TODO
+	 * Generates and returns a formatted {@link java.lang.String} of the given information. 
 	 * 
-	 * @param reads	
-	 * @param data	
-	 * @param opt	
+	 * @param reads	An {@link java.util.ArrayList} of all reads in this input.
+	 * @param data	A {@link scala.Tuple3} of the following, in order:
+	 * 					number of reference sequences,
+	 * 					number of reads,
+	 * 					maximum alignment score,
+	 * 					execution time
+	 * @param opt	An {@link java.util.ArrayList} of the best-matched reference sequences and
+	 * 				the corresponding matching locations.
 	 * 
-	 * @return		
+	 * @return		A formatted {@link java.lang.String} of the given information.
 	 */
 	public static class GetOutputStr implements Function3< ArrayList<String> , Tuple3<int[],Integer,Long> , ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> , String >
 	{
@@ -239,13 +251,15 @@ public class InOutOps
 	}
 	
 	/**
-	 * TODO
+	 * Returns a formatted {@link java.lang.String} of the matrices of scores and corresponding 
+	 * alignment types generated in the first step of the Smith-Waterman algorithm.
+	 * Also prints this {@link java.lang.String} to standard out.
 	 * 
-	 * @param scores	
-	 * @param aligns	
-	 * @param seqs		
+	 * @param scores	The matrix of scores.
+	 * @param aligns	The matrix of corresponding alignment types
+	 * @param seqs		The sequences used in the alignment process, in the form { reference , read }.
 	 * 
-	 * @return			
+	 * @return			A formatted {@link java.lang.String} of the matrices of scores and corresponding alignment types.
 	 */
 	public static class PrintMatrices implements Function3< int[][] , char[][] , String[] , String >
 	{
@@ -323,12 +337,12 @@ public class InOutOps
 	/* --- UTILITY --------------------------------------------------------- */
 	
 	/**
-	 * TODO
+	 * Returns {@code true} if the given line is a line of metadata, {@code false} otherwise.
 	 * 
-	 * @param line		
-	 * @param delimiter	
+	 * @param line		The {@link java.lang.String} to be checked.
+	 * @param delimiter	The {@link java.lang.String} that identifies a line as metadata.
 	 * 
-	 * @return			
+	 * @return			{@code true} if the given line is a line of metadata, {@code false} otherwise.
 	 */
 	private static class IsMetadata implements Function2< String , String , Boolean >
 	{
