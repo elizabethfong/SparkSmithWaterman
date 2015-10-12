@@ -1,4 +1,4 @@
-package com.metrics ;
+package metrics ;
 
 import java.io.BufferedWriter ;
 import java.io.File ;

@@ -1,4 +1,4 @@
-package com.sw ;
+package sw ;
 
 import org.apache.spark.api.java.function.Function2 ;
 import org.apache.spark.api.java.function.Function3 ;

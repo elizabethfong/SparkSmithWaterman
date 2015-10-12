@@ -1,7 +1,7 @@
-package com.metrics ;
+package metrics ;
 
 import java.util.ArrayList ;
-import com.sw.* ;
+import sw.* ;
 
 public class Metrics 
 {

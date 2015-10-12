@@ -1,4 +1,4 @@
-package com.sw ;
+package sw ;
 
 import java.io.BufferedWriter ;
 import java.io.File ;
