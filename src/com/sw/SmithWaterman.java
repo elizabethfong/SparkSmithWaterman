@@ -4,7 +4,6 @@ import org.apache.spark.api.java.function.Function2 ;
 import org.apache.spark.api.java.function.Function3 ;
 
 import scala.Tuple2 ;
-import scala.Tuple4 ;
 
 import java.lang.StringBuilder ;
 

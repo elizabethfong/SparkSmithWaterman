@@ -3,8 +3,7 @@ package com.sw ;
 import java.io.File ;
 
 /**
- * TODO 
- * OOP Directory Crawler
+ * A directory crawler. Implemented in an Object-Oriented manner.
  * 
  * @author Elizabeth Fong
  * @version Insight Data Engineering NY, September-October 2015
@@ -19,9 +18,9 @@ public class DirectoryCrawler
 	/* --- METHODS --------------------------------------------------------- */
 	
 	/**
-	 * TODO
+	 * Constructor. Initialises the directory crawler.
 	 * 
-	 * @param root	
+	 * @param root	The path for the root of the directory.
 	 */
 	public DirectoryCrawler( String root )
 	{
@@ -40,9 +39,9 @@ public class DirectoryCrawler
 	}
 	
 	/**
-	 * TODO
+	 * Returns {@code true} if the directory has a next file, {@code false} otherwise.
 	 * 
-	 * @return	
+	 * @return {@code true} if the directory has a next file, {@code false} otherwise.
 	 */
 	public boolean hasNext()
 	{
@@ -50,9 +49,9 @@ public class DirectoryCrawler
 	}
 	
 	/**
-	 * TODO
+	 * Returns the next file in the directory.
 	 * 
-	 * @return	
+	 * @return The next file in the directory.
 	 */
 	public File next()
 	{
@@ -63,7 +62,9 @@ public class DirectoryCrawler
 	/* --- NODE CLASS ------------------------------------------------------ */
 	
 	/**
-	 * TODO
+	 * This class organises the directories in a tree-like structure,
+	 * where each directory/sub-directories and files are nodes.
+	 * Directories have children, where files are leaf nodes (no children).
 	 * 
 	 * @author Elizabeth Fong
 	 * @version Insight Data Engineering NY, September-October 2015
@@ -79,10 +80,11 @@ public class DirectoryCrawler
 		
 		
 		/**
-		 * TODO 
+		 * Constructor.
+		 * Creates a node, given the path to the file/directory and the parent node.
 		 * 
-		 * @param path		
-		 * @param parent	
+		 * @param path		The path to this file/directory.
+		 * @param parent	The parent directory.
 		 */
 		private Directory( String path , Directory parent )
 		{
@@ -97,9 +99,10 @@ public class DirectoryCrawler
 		}
 		
 		/**
-		 * TODO
+		 * Returns {@code true} if this directory has a next file, {@code false} otherwise.
+		 * This method moves the pointer to the next file.
 		 * 
-		 * @return	
+		 * @return {@code true} if this directory has a next file, {@code false} otherwise.
 		 */
 		private boolean hasNext()
 		{
@@ -136,9 +139,9 @@ public class DirectoryCrawler
 		}
 		
 		/**
-		 * TODO
+		 * Returns the next file in the directory.
 		 * 
-		 * @return	
+		 * @return The next file in the directory.
 		 */
 		private File next()
 		{
