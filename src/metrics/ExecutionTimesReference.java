@@ -3,6 +3,12 @@ package metrics ;
 import sw.Distribution ;
 
 
+/**
+ * TODO
+ * 
+ * @author Elizabeth Fong
+ * @version Insight Data Engineering NY, September-October 2015
+ */
 public class ExecutionTimesReference 
 {	
 	// change num reads 
@@ -29,6 +35,9 @@ public class ExecutionTimesReference
 	/* --- TESTS ----------------------------------------------------------- */
 	
 	// change num reads
+	/**
+	 * TODO
+	 */
 	public static void runTest1()
 	{
 		String refDir = REF1 ;
@@ -43,6 +52,9 @@ public class ExecutionTimesReference
 	}
 	
 	// change read lengths
+	/**
+	 * TODO
+	 */
 	public static void runTest2()
 	{
 		String refDir = REF2 ;
@@ -57,39 +69,51 @@ public class ExecutionTimesReference
 	}
 	
 	// change ref num
+	/**
+	 * TODO
+	 */
 	public static void runTest3()
 	{
-		String refDir = REF3 ;
+		String refDirParent = REF3 ;
 		String inDir = IN3 ;
 		String delimiter = null ;
 		String outDir = OUT3 ;
-		String outFileName = "result" ;
+		String outGeneralName = "result" ;
 		String outFileExt = null ;
 		
 		int numDirs = 28 ;
 		
 		for( int i = 1 ; i <= numDirs ; i++ )
 		{
-			String[] args = { refDir+i , inDir , delimiter , outDir , outFileName+i+"_" , outFileExt } ;
+			String refDir = refDirParent + "/ref" + i ;
+			String outFileName = outGeneralName + i + "_" ;
+			
+			String[] args = { refDir , inDir , delimiter , outDir , outFileName , outFileExt } ;
 			new Distribution.DistributeReference().call( args , null ) ;
 		}
 	}
 	
 	// change ref length
+	/**
+	 * TODO
+	 */
 	public static void runTest4()
 	{
-		String refDir = REF4 ;
+		String refDirParent = REF4 ;
 		String inDir = IN4 ;
 		String delimiter = null ;
 		String outDir = OUT4 ;
-		String outFileName = null ;
+		String outGeneralName = null ;
 		String outFileExt = null ;
 		
 		int numDirs = 36 ;
 		
 		for( int i = 1 ; i <= numDirs ; i++ )
 		{
-			String[] args = { refDir+i , inDir , delimiter , outDir , outFileName+i+"_" , outFileExt } ;
+			String refDir = refDirParent + "/ref" + i ;
+			String outFileName = outGeneralName + i + "_" ;
+			
+			String[] args = { refDir , inDir , delimiter , outDir , outFileName , outFileExt } ;
 			new Distribution.DistributeReference().call( args , null ) ;
 		}
 	}
@@ -97,11 +121,16 @@ public class ExecutionTimesReference
 	
 	/* --- MAIN ------------------------------------------------------------ */
 	
+	/**
+	 * TODO
+	 * 
+	 * @param args None expected.
+	 */
 	public static void main( String[] args )
 	{	
-		runTest1() ;
-		runTest2() ;
+		//runTest1() ;
+		//runTest2() ;
 		runTest3() ;
-		runTest4() ;
+		//runTest4() ;
 	}
 }

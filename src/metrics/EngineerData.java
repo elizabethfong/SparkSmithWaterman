@@ -1,4 +1,4 @@
-package metrics;
+package metrics ;
 
 import java.io.BufferedWriter ;
 import java.io.File ;
@@ -7,25 +7,47 @@ import java.io.IOException ;
 
 import java.lang.StringBuilder ;
 
+
+/**
+ * This class has methods which engineers datasets for more accurate benchmarking.
+ * 
+ * @author Elizabeth Fong
+ * @version Insight Data Engineering NY, September-October 2015
+ */
 public class EngineerData 
 {
+	// CONSTANTS
 	private static final String NEWLINE = System.lineSeparator() ;
 	
+	// a line of reference sequence
 	private static final String REF = "CCTGGGTCCTGCCTCGCATCTGACCAGGGCAGGTGGCCTCCTCATCACACTGCTGCCTCTGCTGTTGGCCCTGCTCATGA" ;
+	
+	// a read - 80bp
 	private static final String READ_80 = "AATTTTAGTCTCTCCCTACCCTTTTGGACAGAGCTTCCTGTCCTCTCATTTCACAGGTTATGCAACAGAGGGTTCTGTGT" ;
+	
+	// a part of a read - 20bp
 	private static final String READ_20 = "ACTGACTGACTGACTGACTG" ;
 	
+	// file names
 	private static final String REF_NAME = "ref" ;
 	private static final String IN_NAME = "input" ;
 	
+	// file extensions
 	private static final String REF_EXT = ".rna.fna" ;
 	private static final String IN_EXT = ".fa" ;
 	
+	// delimiter
 	private static final String DELIMITER = ">gi" ;
 	
 	
 	/* --- INPUT ----------------------------------------------------------- */
 	
+	/**
+	 * In the given directory, creates multiple input files with varying numbers of reads.
+	 * The length of each read is the same (80bp).
+	 * 
+	 * @param directory The directory the files are to be created in.
+	 */
 	public static void changeReadNum( String directory )
 	{
 		// special # of rows, increment remainder of reads by num
@@ -56,6 +78,12 @@ public class EngineerData
 		}
 	}
 	
+	/**
+	 * In the given directory, creates multiple input files with varying read lengths.
+	 * The number of reads in each file is the same (5).
+	 * 
+	 * @param directory The directory the files are to be created in.
+	 */
 	public static void changeReadLen( String directory )
 	{
 		int counter = 0 ;
@@ -78,6 +106,13 @@ public class EngineerData
 	
 	/* --- REFERENCE ------------------------------------------------------- */
 	
+	/**
+	 * In the given directory, creates sub-directories which contain a reference file each.
+	 * Each reference file has different numbers of reference sequences, 
+	 * but each sequence has the same length (400bp).
+	 * 
+	 * @param directory The directory the sub-directories and files are to be created in.
+	 */
 	public static void changeRefNum( String directory )
 	{
 		String refSeq = getReadsSameLen( REF , 5 ) ;
@@ -133,6 +168,13 @@ public class EngineerData
 		}
 	}
 	
+	/**
+	 * In the given directory, creates sub-directories which contain a reference file each.
+	 * Each reference file has the same number of reference sequences (1),
+	 * but each sequence has a different length.
+	 * 
+	 * @param directory The directory the sub-directories and files are to be created in.S
+	 */
 	public static void changeRefLen( String directory )
 	{
 		// is the change read num code, but with directory creation.
@@ -184,6 +226,16 @@ public class EngineerData
 	
 	/* --- UTILITY --------------------------------------------------------- */
 	
+	/**
+	 * Returns a {@link java.util.String} of the given read, replicated over the
+	 * given number of rows.
+	 * 
+	 * @param read	The read to be repeated.
+	 * @param rows	The number of rows the read is to be repeated by.
+	 * 
+	 * @return		A {@link java.util.String} of the given read, replicated over the
+	 * 				given number of rows.
+	 */
 	private static String getReadsSameLen( String read , int rows )
 	{
 		StringBuilder str = new StringBuilder() ;
@@ -194,11 +246,27 @@ public class EngineerData
 		return str.toString() ;
 	}
 	
+	/**
+	 * Returns a {@link java.util.String} of the file path formed from the given parameters.
+	 * 
+	 * @param directory	The directory of the file.
+	 * @param name		The name of the file.
+	 * @param num		The number of the file. Appended to the name of the file.
+	 * @param ext		The file extension.
+	 * 
+	 * @return			A {@link java.util.String} of the file path formed from the given parameters.
+	 */
 	private static String getPath( String directory , String name , int num , String ext )
 	{
 		return directory + "/" + name + num + ext ;
 	}
 	
+	/**
+	 * Writes the given {@link java.lang.String} to the file specified by the given path.
+	 * 
+	 * @param str			The {@link java.lang.String} to be written to file.
+	 * @param outputPath	The path of the output file.
+	 */
 	private static void writeToFile( String str , String outputPath )
 	{
 		File file = new File( outputPath ) ;
@@ -222,16 +290,19 @@ public class EngineerData
 	}
 	
 	
+	/* --- MAIN ------------------------------------------------------------ */
 	
-	
-	
-	
-	
+	/**
+	 * Main method. Runs all public methods in {@link metrics.EngineerData} to
+	 * enable more accurate benchmarking.
+	 * 
+	 * @param args None expected.
+	 */
 	public static void main( String[] args )
 	{
-		//changeReadNum( "C:/Users/Elizabeth/Desktop/input/readNum" ) ;
-		//changeReadLen( "C:/Users/Elizabeth/Desktop/input/readLen" ) ;
-		//changeRefNum( "C:/Users/Elizabeth/Desktop/testRef/refNum" ) ;
-		//changeRefLen( "C:/Users/Elizabeth/Desktop/testRef/refLen" ) ;
+		changeReadNum( "/home/ubuntu/project/input/readNum" ) ;
+		changeReadLen( "/home/ubuntu/project/input/readLen" ) ;
+		changeRefNum( "/home/ubuntu/project/testRef/refNum" ) ;
+		changeRefLen( "/home/ubuntu/project/testRef/refLen" ) ;
 	}
 }
