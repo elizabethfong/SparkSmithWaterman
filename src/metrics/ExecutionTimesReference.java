@@ -133,9 +133,9 @@ public class ExecutionTimesReference
 	 */
 	public static void main( String[] args )
 	{	
-		//runTest1() ;
-		//runTest2() ;
+		runTest1() ;
+		runTest2() ;
 		runTest3() ;
-		//runTest4() ;
+		runTest4() ;
 	}
 }
