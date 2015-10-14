@@ -19,12 +19,14 @@ import scala.Tuple3 ;
 
 
 /**
+ * <p>
  * Class of functions dealing with input and ouput, restricted to:
- * reading from and writing to files, 
- * formatting data into a {@link java.lang.String} for printing, and
- * printing data to standard out.
+ * 		<ul>reading from and writing to files</ul>
+ * 		<ul>formatting data into a {@link java.lang.String} for printing</ul>
+ * 		<ul>printing data to standard out</ul><br />
  * 
  * Written in functional Spark.
+ * </p>
  * 
  * @author Elizabeth Fong
  * @version Insight Data Engineering NY, September-October 2015
@@ -42,13 +44,19 @@ public class InOutOps
 	/**
 	 * Extracts all reads from an input file and returns them, in order, in an {@link java.util.ArrayList}. 
 	 * 
-	 * @param file		The input file.
-	 * @param delimiter	The {@link java.lang.String} which shows that a line in the file is metadata.
-	 * 
-	 * @return			An {@link java.util.ArrayList} of all reads from the given input file.
+	 * @see {@link org.apache.spark.api.java.function.Function2
 	 */
 	public static class GetReads implements Function2< File , String , ArrayList<String> >
 	{
+		/**
+		 * Extracts all reads from an input file and returns them, in order, in an {@link java.util.ArrayList}. 
+		 * 
+		 * @param file		<p><ul>The input file.</ul></p>
+		 * @param delimiter	<p><ul>The {@link java.lang.String} which shows that a line in the file is metadata.</ul></p>
+		 * 
+		 * @return			<p><ul>An {@link java.util.ArrayList} of all reads from the given input file.</ul></p>
+		 */
+		@Override
 		public ArrayList<String> call( File file , String delimiter )
 		{
 			ArrayList<String> reads = new ArrayList<String>() ;
@@ -81,17 +89,29 @@ public class InOutOps
 	}
 	
 	/**
+	 * <p>
 	 * Extracts each reference sequence from a file of reference sequences and returns them,
 	 * in order, in an {@code ArrayList{String[]}, where each element has the form 
 	 * { metadata , sequence }.
+	 * </p>
 	 * 
-	 * @param file		The file of reference sequences.
-	 * @param delimiter	The {@link java.lang.String} which separates a reference sequence from another.
-	 * 
-	 * @return			An {@link java.util.ArrayList} of all reference sequences in the given file.
+	 * @see {@link org.apache.spark.api.java.function.Function2
 	 */
 	public static class GetRefSeqs implements Function2< File , String , ArrayList<String[]> >
 	{
+		/**
+		 * <p>
+		 * Extracts each reference sequence from a file of reference sequences and returns them,
+		 * in order, in an {@code ArrayList{String[]}, where each element has the form 
+		 * { metadata , sequence }.
+		 * </p>
+		 * 
+		 * @param file		<p><ul>The file of reference sequences.</ul></p>
+		 * @param delimiter	<p><ul>The {@link java.lang.String} which separates a reference sequence from another.</ul></p>
+		 * 
+		 * @return			<p><ul>An {@link java.util.ArrayList} of all reference sequences in the given file.</ul></p>
+		 */
+		@Override
 		public ArrayList<String[]> call( File file , String delimiter )
 		{
 			ArrayList<String[]> sequences = new ArrayList<String[]>() ;
@@ -152,16 +172,27 @@ public class InOutOps
 	/* --- OUTPUT ---------------------------------------------------------- */
 	
 	/**
-	 * Prints the given {@link java.lang.String} to the file with the given file path.
+	 * <p>
+	 * Prints the given {@link java.lang.String} to the file with the given file path.<br />
 	 * The directory in which the file is to reside in must exist.
+	 * </p>
 	 * 
-	 * @param filepath	The file path.
-	 * @param data		The data to be written to file.
-	 * 
-	 * @return			{@code true} if writing to file was successful, {@code false} otherwise.
+	 * @see {@link org.apache.spark.api.java.function.Function2
 	 */
 	public static class PrintStrToFile implements Function2< String , String , Boolean >
 	{
+		/**
+		 * <p>
+		 * Prints the given {@link java.lang.String} to the file with the given file path.<br />
+		 * The directory in which the file is to reside in must exist.
+		 * </p>
+		 * 
+		 * @param filepath	<p><ul>The file path.</ul></p>
+		 * @param data		<p><ul>The data to be written to file.</ul></p>
+		 * 
+		 * @return			<p><ul>{@code true} if writing to file was successful, {@code false} otherwise.</ul></p>
+		 */
+		@Override
 		public Boolean call( String filepath , String data )
 		{
 			try
@@ -190,19 +221,26 @@ public class InOutOps
 	/**
 	 * Generates and returns a formatted {@link java.lang.String} of the given information. 
 	 * 
-	 * @param reads	An {@link java.util.ArrayList} of all reads in this input.
-	 * @param data	A {@link scala.Tuple3} of the following, in order:
-	 * 					number of reference sequences,
-	 * 					number of reads,
-	 * 					maximum alignment score,
-	 * 					execution time
-	 * @param opt	An {@link java.util.ArrayList} of the best-matched reference sequences and
-	 * 				the corresponding matching locations.
-	 * 
-	 * @return		A formatted {@link java.lang.String} of the given information.
+	 * @see {@link org.apache.spark.api.java.function.Function3
 	 */
 	public static class GetOutputStr implements Function3< ArrayList<String> , Tuple3<int[],Integer,Long> , ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> , String >
 	{
+		/**
+		 * Generates and returns a formatted {@link java.lang.String} of the given information. 
+		 * 
+		 * @param reads	<p><ul>An {@link java.util.ArrayList} of all reads in this input.</ul></p>
+		 * @param data	<p><ul>A {@link scala.Tuple3} of the following, in order:
+		 * 					<ul>number of reference sequences</ul>
+		 * 					<ul>number of reads</ul>
+		 * 					<ul>maximum alignment score</ul>
+		 * 					<ul>execution time</ul>
+		 * 				</ul></p>
+		 * @param opt	<p><ul>An {@link java.util.ArrayList} of the best-matched reference sequences and
+		 * 				the corresponding matching locations.</ul></p>
+		 * 
+		 * @return		<p><ul>A formatted {@link java.lang.String} of the given information.</ul></p>
+		 */
+		@Override
 		public String call( ArrayList<String> reads , Tuple3<int[],Integer,Long> data , ArrayList<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> opt )
 		{
 			StringBuilder str = new StringBuilder() ;
@@ -251,18 +289,30 @@ public class InOutOps
 	}
 	
 	/**
+	 * <p>
 	 * Returns a formatted {@link java.lang.String} of the matrices of scores and corresponding 
-	 * alignment types generated in the first step of the Smith-Waterman algorithm.
+	 * alignment types generated in the first step of the Smith-Waterman algorithm.<br />
 	 * Also prints this {@link java.lang.String} to standard out.
+	 * </p>
 	 * 
-	 * @param scores	The matrix of scores.
-	 * @param aligns	The matrix of corresponding alignment types
-	 * @param seqs		The sequences used in the alignment process, in the form { reference , read }.
-	 * 
-	 * @return			A formatted {@link java.lang.String} of the matrices of scores and corresponding alignment types.
+	 * @see {@link org.apache.spark.api.java.function.Function3
 	 */
 	public static class PrintMatrices implements Function3< int[][] , char[][] , String[] , String >
 	{
+		/**
+		 * <p>
+		 * Returns a formatted {@link java.lang.String} of the matrices of scores and corresponding 
+		 * alignment types generated in the first step of the Smith-Waterman algorithm.<br />
+		 * Also prints this {@link java.lang.String} to standard out.
+		 * </p>
+		 * 
+		 * @param scores	<p><ul>The matrix of scores</ul></p>
+		 * @param aligns	<p><ul>The matrix of corresponding alignment types</ul></p>
+		 * @param seqs		<p><ul>The sequences used in the alignment process - reference sequence , read</ul></p>
+		 * 
+		 * @return			<p><ul>A formatted {@link java.lang.String} of the matrices of scores and corresponding alignment types.</ul></p>
+		 */
+		@Override
 		public String call( int[][] scores , char[][] aligns , String[] seqs )
 		{
 			StringBuilder str = new StringBuilder() ;
@@ -339,13 +389,19 @@ public class InOutOps
 	/**
 	 * Returns {@code true} if the given line is a line of metadata, {@code false} otherwise.
 	 * 
-	 * @param line		The {@link java.lang.String} to be checked.
-	 * @param delimiter	The {@link java.lang.String} that identifies a line as metadata.
-	 * 
-	 * @return			{@code true} if the given line is a line of metadata, {@code false} otherwise.
+	 * @see {@link org.apache.spark.api.java.function.Function2
 	 */
 	private static class IsMetadata implements Function2< String , String , Boolean >
 	{
+		/**
+		 * Returns {@code true} if the given line is a line of metadata, {@code false} otherwise.
+		 * 
+		 * @param line		<p><ul>The {@link java.lang.String} to be checked.</ul></p>
+		 * @param delimiter	<p><ul>The {@link java.lang.String} that identifies a line as metadata.</ul></p>
+		 * 
+		 * @return			<p><ul>{@code true} if the given line is a line of metadata, {@code false} otherwise.</ul></p>
+		 */
+		@Override
 		public Boolean call( String line , String delimiter )
 		{
 			if( line.length() >= delimiter.length() && line.substring(0,delimiter.length()).equals(delimiter) )
