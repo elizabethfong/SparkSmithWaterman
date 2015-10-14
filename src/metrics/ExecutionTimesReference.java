@@ -37,6 +37,8 @@ public class ExecutionTimesReference
 	
 	/**
 	 * A test which changes the number of reads.
+	 * Variable: # reads
+	 * Constant: read length, # reference sequences, reference sequence length, # files of reference sequences
 	 */
 	public static void runTest1()
 	{
@@ -53,6 +55,8 @@ public class ExecutionTimesReference
 	
 	/**
 	 * A test which changes the length of the reads.
+	 * Variable: read length
+	 * Constant: # reads, # reference sequences, length of reference sequences, # files of reference sequences
 	 */
 	public static void runTest2()
 	{
@@ -69,6 +73,8 @@ public class ExecutionTimesReference
 	
 	/**
 	 * A test which changes the number of reference sequences.
+	 * Variable: # reference sequences
+	 * Constant: # reads, read length, length of reference sequence, # files of reference sequences
 	 */
 	public static void runTest3()
 	{
@@ -93,6 +99,8 @@ public class ExecutionTimesReference
 	
 	/**
 	 * A test which changes the length of the reference sequences.
+	 * Variable: length of reference sequences
+	 * Constant: # reads, read length, # reference sequences, # files of reference sequences.
 	 */
 	public static void runTest4()
 	{

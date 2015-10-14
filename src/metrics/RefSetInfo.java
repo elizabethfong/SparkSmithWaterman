@@ -15,22 +15,43 @@ import scala.Tuple5 ;
 import sw.DirectoryCrawler ;
 import sw.InOutOps ;
 
+
 /**
  * Prints out information about the dataset of reference sequences to standard out.
- * TODO
  * 
  * @author Elizabeth Fong
  * @version Insight Data Engineering NY, September-October 2015
  */
 public class RefSetInfo 
 {
+	// CONSTANTS
 	private static final String NEWLINE = System.lineSeparator() ;
 	
-	// entire directory
+	// the directory
 	private static final String REF_DIR = "/home/ubuntu/project/reference" ;
 	private static final String DELIMITER = ">gi" ;
 	
 	
+	/* --- INFORMATION EXTRACTION ------------------------------------------ */
+	
+	/**
+	 * Extracts and returns information from the given directory of reference sequences.
+	 * 
+	 * @param directory	The directory of reference sequences.
+	 * 
+	 * @return			The extracted information, in a {@link scala.Tuple5}, in the following order:
+	 * 					1 - path of the directory
+	 * 					2 - number of files in the directory
+	 * 					3 - a {@code long[]} containing, in order: 
+	 * 						the number of sequences , 
+	 * 						total number of base pairs, 
+	 * 						minimum number of base pairs in a sequence , 
+	 * 						maximum number of base pairs in a sequence
+	 * 					4 - a {@code double[]} containing, in order:
+	 * 						mean number of base pairs in a sequence
+	 * 						median number of base pairs in a sequence
+	 * 					5 - an {@link java.util.ArrayList} of files and their corresponding number of sequences.
+	 */
 	public static Tuple5<String,Integer,long[],double[],ArrayList<Tuple2<String,Integer>>> getInfo( String directory )
 	{
 		if( directory == null || directory.trim().length() == 0 )
@@ -93,6 +114,17 @@ public class RefSetInfo
 		return new Tuple5<String,Integer,long[],double[],ArrayList<Tuple2<String,Integer>>>( directory , numFiles , longs , doubles , fileList ) ;
 	}
 	
+	
+	/* --- FORMATTING ------------------------------------------------------ */
+	
+	/**
+	 * Extracts information the given directory of reference sequences,
+	 * formats the extracted information and 
+	 * writes this information to the file located in the given output file path.
+	 * 
+	 * @param directory		The directory of reference sequences.
+	 * @param outputFile	The path of the output file where the information is to be written to.
+	 */
 	public static void printAllInfo( String directory , String outputFile )
 	{
 		StringBuilder str = new StringBuilder() ;
@@ -132,6 +164,15 @@ public class RefSetInfo
 		new InOutOps.PrintStrToFile().call( outputFile , str.toString() ) ;
 	}
 	
+	/**
+	 * Given an {@link java.util.ArrayList} of {@link scala.Tuple2} elements containing elements in each row
+	 * of the table, returns a formatted {@code String} displaying the elements in a table.
+	 * 
+	 * @param table An {@link java.util.ArrayList} of {@link scala.Tuple2} elements containing elements 
+	 * 				in each row of the table.
+	 * 
+	 * @return		A formatted {@code String} displaying the elements in a table.
+	 */
 	private static String getFormattedTable( ArrayList<Tuple2<String,Integer>> table )
 	{
 		StringBuilder str = new StringBuilder() ;
@@ -154,6 +195,16 @@ public class RefSetInfo
 		return str.toString() ;
 	}
 	
+	/**
+	 * Returns a formatted {@code String} of 3 elements, using the given format {@code String}.
+	 * 
+	 * @param format	A format {@code String} as defined by {@link java.util.Formatter}.
+	 * @param arg1		The first element.
+	 * @param arg2		The second element.
+	 * @param arg3		The third element.
+	 * 
+	 * @return			A formatted {@code String} of 3 elements, using the given format {@code String}.
+	 */
 	private static String format3( String format , Object arg1 , Object arg2 , Object arg3 )
 	{
 		Formatter formatter = new Formatter() ;
@@ -166,6 +217,15 @@ public class RefSetInfo
 		return str ;
 	}
 	
+	
+	/* --- COMPARATORS ----------------------------------------------------- */
+	
+	/**
+	 * A {@link java.util.Comparator} of {@link scala.Tuple2} with file names and their number of sequences.
+	 * This orders elements in ascending order of file names.
+	 * 
+	 * @see {@link java.util.Comparator#compare(Object, Object)}
+	 */
 	private static class FilenameComparator implements Comparator<Tuple2<String,Integer>>
 	{
 		public int compare( Tuple2<String,Integer> t1 , Tuple2<String,Integer> t2 )
@@ -174,6 +234,12 @@ public class RefSetInfo
 		}
 	}
 	
+	/**
+	 * A {@link java.util.Comparator} of {@link scala.Tuple2} with file names and their number of sequences.
+	 * This orders elements in ascending order of number of sequences contained in each file.
+	 * 
+	 * @see {@link java.util.Comparator#compare(Object, Object)}
+	 */
 	private static class NumRefComparator implements Comparator<Tuple2<String,Integer>>
 	{
 		public int compare( Tuple2<String,Integer> t1 , Tuple2<String,Integer> t2 )
@@ -183,6 +249,7 @@ public class RefSetInfo
 	}
 	
 	
+	/* --- MAIN ------------------------------------------------------------ */
 	
 	/**
 	 * Prints out information about the dataset of reference sequences to standard out.
