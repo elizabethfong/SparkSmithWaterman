@@ -25,17 +25,40 @@ public class SmithWaterman
 	/* --- PUBLIC METHODS -------------------------------------------------- */
 	
 	/**
-	 * Finds the best-match reference sequence(s) to the given read, using the Smith-Waterman algorithm.
+	 * <p>
+	 * Finds the best-match reference sequence(s) to the given read, using the Smith-Waterman algorithm.<br />
 	 * Returns the alignment score and the optimal alignments.
+	 * </p>
 	 * 
-	 * @param seqs			An array of {@link java.lang.String} elements of the sequences to be compared, in the order { reference , read }.
-	 * @param alignScores	An {@code int[]} of alignment scores used in the Smith-Waterman algorithm, in the order { match , mismatch , gap }.
-	 * @param alignTypes	A {@code char[]} of alignment types used in the Smith-Waterman algorithm, in the order { alignment , insertion , deletion , none }.
-	 * 
-	 * @return				A {@link scala.Tuple2} of the alignment score and the optimal alignments.			
+	 * @see	{@link org.apache.spark.api.java.function.Function3		
 	 */
 	public static class OptAlignments implements Function3< String[] , int[] , char[] , Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> >
 	{
+		/**
+		 * <p>
+		 * Finds the best-match reference sequence(s) to the given read, using the Smith-Waterman algorithm.<br />
+		 * Returns the alignment score and the optimal alignments.
+		 * </p>
+		 * 
+		 * @param seqs			<p><ul>An array of {@link java.lang.String} elements of the sequences to be compared, in the order:
+		 * 							<ul>reference sequence</ul>
+		 * 							<ul>read</ul>
+		 * 						</ul></p>
+		 * @param alignScores	<p><ul>An {@code int[]} of alignment scores used in the Smith-Waterman algorithm, in the order:
+		 * 							<ul>match score</ul>
+		 * 							<ul>mismatch score</ul>
+		 * 							<ul>gap score</ul>
+		 * 						</ul></p>
+		 * @param alignTypes	<p><ul>A {@code char[]} of alignment types used in the Smith-Waterman algorithm, in the order:
+		 * 							<ul>alignment</ul>
+		 * 							<ul>insertion</ul>
+		 * 							<ul>deletion</ul>
+		 * 							<ul>no alignment</ul>
+		 * 						</ul></p>
+		 * 
+		 * @return				<p><ul>A {@link scala.Tuple2} of the alignment score and the optimal alignments.</ul></p>
+		 */
+		@Override
 		public Tuple2<Integer,ArrayList<Tuple2<Integer,String[]>>> call( String[] seqs , int[] alignScores , char[] alignTypes )
 		{
 			// VARIABLES
@@ -73,19 +96,38 @@ public class SmithWaterman
 	/* --- MATRIX SCORING -------------------------------------------------- */
 	
 	/**
-	 * Step 1 of the Smith-Waterman algorithm. Filling a matrix with scores and alignment information.
+	 * <p>
+	 * Step 1 of the Smith-Waterman algorithm. Filling a matrix with scores and alignment information.<br />
 	 * This step is distributed, but is not optimal.
+	 * </p>
 	 * 
-	 * @param matrices	A {@link scala.Tuple2} of matrices to be filled. 
-	 * 					The matrices to be filled are an {@code int[][]} of scores and a {@code char[][]} of corresponding alignment types.
-	 * @param seqs		An array of {@link java.lang.String} elements of the sequences to be compared, in the order { reference , read }.
-	 * @param alignInfo	A {@link scala.Tuple2} of alignment information used in filling the given matrices, in the order { alignment scores , alignment types }.
-	 *
-	 * @return			A {@link scala.Tuple2} of the maximum cell score and an {@link java.util.ArrayList} of coordinates of cells with this score.
-	 * 					The given matrices will be filled upon return.
+	 * @see	{@link org.apache.spark.api.java.function.Function3	
 	 */
 	private static class ScoreMatrix implements Function3< Tuple2<int[][],char[][]> , String[] , Tuple2<int[],char[]> , Tuple2<Integer,ArrayList<int[]>> >
 	{
+		/**
+		 * <p>
+		 * Step 1 of the Smith-Waterman algorithm. Filling a matrix with scores and alignment information.<br />
+		 * This step is distributed, but is not optimal.
+		 * </p>
+		 * 
+		 * @param matrices	<p><ul>A {@link scala.Tuple2} of matrices to be filled. 
+		 * 						<ul>{@code int[][]}  - matrix of scores</ul>
+		 * 						<ul>{@code char[][]} - matrix of corresponding alignment types.</ul>
+		 * 					</ul></p>
+		 * @param seqs		<p><ul>An array of {@link java.lang.String} elements of the sequences to be compared, in the order:
+		 * 						<ul>reference sequence</ul>
+		 * 						<ul>read</ul>
+		 * 					</ul></p>
+		 * @param alignInfo	<p><ul>A {@link scala.Tuple2} of alignment information used in filling the given matrices, in the order:
+		 * 						<ul>{@code int[]} alignment scores - match, mismatch, gap</ul>
+		 * 						<ul>{@code char[]} alignment types - alignment, insertion, deletion, none
+		 * 					</ul></p>
+		 *
+		 * @return			<p><ul>A {@link scala.Tuple2} of the maximum cell score and an {@link java.util.ArrayList} of coordinates of cells with this score.</ul>
+		 * 					<ul>The given matrices will be filled upon return.</ul></ul></p>
+		 */
+		@Override
 		public Tuple2<Integer,ArrayList<int[]>> call( Tuple2<int[][],char[][]> matrices , String[] seq , Tuple2<int[],char[]> alignInfo )
 		{
 			// variables
@@ -153,14 +195,27 @@ public class SmithWaterman
 	/**
 	 * Returns the cell score and alignment type in a {@link scala.Tuple2} for a given cell.
 	 * 
-	 * @param cellScores	An {@code int[]} for the scores in the north-west, north, and west cells. Used in cell score calculation.
-	 * @param bases			A {@code char[]} of base pairs corresponding to this cell, in the order { reference , input }.
-	 * @param alignInfo		A {@link scala.Tuple2} of alignment information used in filling the given matrices, in the order { alignment scores , alignment types }.
-	 * 
-	 * @return				A {@link scala.Tuple2} of the cell score and the alignment type.
+	 * @see	{@link org.apache.spark.api.java.function.Function3	
 	 */
 	private static class GetCellScore implements Function3< int[] , char[] , Tuple2<int[],char[]> , Tuple2<Integer,Character> > 
 	{
+		/**
+		 * Returns the cell score and alignment type in a {@link scala.Tuple2} for a given cell.
+		 * 
+		 * @param cellScores	<p><ul>An {@code int[]} for the scores in the north-west, north, and west cells.</ul>
+		 * 						<ul>Used in cell score calculation.</ul></p>
+		 * @param bases			<p><ul>A {@code char[]} of base pairs corresponding to this cell, in the order:
+		 * 							<ul>reference base pair</ul>
+		 * 							<ul>read base pair</ul>
+		 * 						</ul></p>
+		 * @param alignInfo		<p><ul>A {@link scala.Tuple2} of alignment information used in filling the given matrices, in the order:
+		 * 							<ul>{@code int[]} alignment scores - match, mismatch, gap</ul>
+		 * 							<ul>{@code char[]} alignment types - alignment, insertion, deletion, none</ul>
+		 * 						</ul></p>
+		 * 
+		 * @return				<p><ul>A {@link scala.Tuple2} of the cell score and the alignment type.</ul></p>
+		 */
+		@Override
 		public Tuple2<Integer,Character> call( int[] cellScores , char[] bases , Tuple2<int[],char[]> alignInfo ) 
 		{
 			int[] alignScores = alignInfo._1() ;
@@ -200,15 +255,27 @@ public class SmithWaterman
 	}
 	
 	/**
-	 * Calculates and returns the insertion or deletion score of a cell. Both scores are calculated in the same way.
+	 * <p>
+	 * Calculates and returns the insertion or deletion score of a cell.<br />
+	 * Both scores are calculated in the same way.
+	 * </p>
 	 * 
-	 * @param cellScore	The north (insertion) or west (deletion) cell.
-	 * @param gapScore	The gap score. Should be negative.
-	 * 
-	 * @return			The calculated insertion or deletion score.
+	 * @see	{@link org.apache.spark.api.java.function.Function2
 	 */
 	private static class InsDelScore implements Function2< Integer , Integer , Integer >
 	{
+		/**
+		 * <p>
+		 * Calculates and returns the insertion or deletion score of a cell.<br />
+		 * Both scores are calculated in the same way.
+		 * </p>
+		 * 
+		 * @param cellScore	<p><ul>The score for the north (insertion) or west (deletion) cell.</ul></p>
+		 * @param gapScore	<p><ul>The gap score. Should be negative.</ul></p>
+		 * 
+		 * @return			<p><ul>The calculated insertion or deletion score.</ul></p>
+		 */
+		@Override
 		public Integer call( Integer cellScore , Integer gapScore )
 		{	
 			return new Integer( cellScore.intValue() + gapScore.intValue() ) ;
@@ -216,16 +283,34 @@ public class SmithWaterman
 	}
 	
 	/**
-	 * Calculates and returns the score for an alignment of base pairs. May be a match or a mismatch of base pairs.
+	 * <p>
+	 * Calculates and returns the score for an alignment of base pairs.<br />
+	 * May be a match or a mismatch of base pairs.
+	 * </p>
 	 * 
-	 * @param nwScore		The score for the northwest cell.
-	 * @param bases			A {@code char[]} of base pairs corresponding to the indices of this cell, in the form (reference,read).
-	 * @param alignScores	An {@code int[]} of alignment scores used in this algorithm, in the form (match,mismatch,gap).
-	 * 
-	 * @return				The score for an alignment of the base pairs corresponding to this cell.
+	 * @see	{@link org.apache.spark.api.java.function.Function3	
 	 */
 	private static class AlignmentScore implements Function3< Integer , char[] , int[] , Integer >
 	{
+		/**
+		 * <p>
+		 * Calculates and returns the score for an alignment of base pairs.<br />
+		 * May be a match or a mismatch of base pairs.
+		 * </p>
+		 * 
+		 * @param nwScore		<p><ul>The score for the northwest cell.</ul></p>
+		 * @param bases			<p><ul>A {@code char[]} of base pairs corresponding to this cell, in the order:
+		 * 							<ul>reference base pair</ul>
+		 * 							<ul>read base pair</ul>
+		 * 						</ul></p>
+		 * @param alignScores	<p><ul>A {@link scala.Tuple2} of alignment information used in filling the given matrices, in the order:
+		 * 							<ul>{@code int[]} alignment scores - match, mismatch, gap</ul>
+		 * 							<ul>{@code char[]} alignment types - alignment, insertion, deletion, none
+		 * 						</ul></p>
+		 * 
+		 * @return				<p><ul>The score for an alignment of the base pairs corresponding to this cell.</ul></p>
+		 */
+		@Override
 		public Integer call( Integer nwScore , char[] bases , int[] alignScores )
 		{
 			char refBase = Character.toUpperCase( bases[0] ) ;
@@ -242,19 +327,35 @@ public class SmithWaterman
 	/* --- GET OPT ALIGNMENT ----------------------------------------------- */
 	
 	/**
-	 * Step 2 of the Smith-Waterman algorithm.
+	 * <p>
+	 * Step 2 of the Smith-Waterman algorithm.<br />
 	 * Given a starting cell, backtracks through the matrix to obtain an optimal alignment.
+	 * </p>
 	 * 
-	 * @param cell			The {@code (i,j)} coordinates of the starting cell
-	 * @param matrixInfo	A {@link scala.Tuple2} of other data required to extract the optimal alignments. 
-	 * 						Contains the sequences in this comparison (reference,read), and the alignment types (alignment,insertion,deletion,none).
-	 * @param matrices		A {@link scala.Tuple2} of the {@code int[][]} of scores and the {@code char[][]} of corresponding alignment types, filled during Step 1.
-	 * 
-	 * @return				A {@link scala.Tuple2} of the index of the beginning of the alignment with respect to the reference sequence,
-	 * 						and how the sequences are aligned.
+	 * @see	{@link org.apache.spark.api.java.function.Function3	
 	 */
 	private static class GetAlignment implements Function3< int[] , Tuple2<String[],char[]> , Tuple2<int[][],char[][]> , Tuple2<Integer,String[]> >
 	{
+		/**
+		 * <p>
+		 * Step 2 of the Smith-Waterman algorithm.<br />
+		 * Given a starting cell, backtracks through the matrix to obtain an optimal alignment.
+		 * </p>
+		 * 
+		 * @param cell			<p><ul>The {@code (i,j)} coordinates of the starting cell</ul></p>
+		 * @param matrixInfo	<p><ul>A {@link scala.Tuple2} of other data required to extract the optimal alignments. 
+		 * 							<ul>A {@code String[]} of the sequences in this comparison - reference sequence , read</ul>
+		 * 							<ul>{@code char[]} alignment types - alignment, insertion, deletion, none</ul>
+		 * 						</ul></p>
+		 * @param matrices		<p><ul>A {@link scala.Tuple2} of matrices filled in Step 1. 
+		 * 							<ul>{@code int[][]}  - matrix of scores</ul>
+		 * 							<ul>{@code char[][]} - matrix of corresponding alignment types.</ul>
+		 * 						</ul></p>
+		 * 
+		 * @return				<p><ul>A {@link scala.Tuple2} of the index of the beginning of the alignment with respect to the reference sequence,
+		 * 						and how the sequences are aligned.</ul></p>
+		 */
+		@Override
 		public Tuple2<Integer,String[]> call( int[] cell , Tuple2<String[],char[]> matrixInfo , Tuple2<int[][],char[][]> matrices )
 		{
 			final char GAP_CHAR = '_' ;
