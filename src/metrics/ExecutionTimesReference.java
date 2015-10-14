@@ -4,29 +4,30 @@ import sw.Distribution ;
 
 
 /**
- * TODO
+ * This class contains benchmarking tests on the Smith-Waterman algorithm, distributing the
+ * reference dataset. Each test varies 1 factor while keeping the others constant.
  * 
  * @author Elizabeth Fong
  * @version Insight Data Engineering NY, September-October 2015
  */
 public class ExecutionTimesReference 
 {	
-	// change num reads 
+	// change num reads - file directories
 	private static final String REF1 = "/home/ubuntu/project/testRef/in" ;
 	private static final String IN1 = "/home/ubuntu/project/input/readNum" ;
 	private static final String OUT1 = "/home/ubuntu/project/output/reference/readNum" ;
 	
-	// change read lengths
+	// change read lengths - file directories
 	private static final String REF2 = "/home/ubuntu/project/testRef/in" ;
 	private static final String IN2 = "/home/ubuntu/project/input/readLen" ;
 	private static final String OUT2 = "/home/ubuntu/project/output/reference/readLen" ;
 	
-	// change num references
+	// change num references - file directories
 	private static final String REF3 = "/home/ubuntu/project/testRef/refNum" ;
 	private static final String IN3 = "/home/ubuntu/project/input/ref" ;
 	private static final String OUT3 = "/home/ubuntu/project/output/reference/refNum" ;
 	
-	// change reference lengths
+	// change reference lengths - file directories
 	private static final String REF4 = "/home/ubuntu/project/testRef/refLen" ;
 	private static final String IN4 = "/home/ubuntu/project/input/ref" ;
 	private static final String OUT4 = "/home/ubuntu/project/output/reference/refLen" ;
@@ -34,9 +35,8 @@ public class ExecutionTimesReference
 	
 	/* --- TESTS ----------------------------------------------------------- */
 	
-	// change num reads
 	/**
-	 * TODO
+	 * A test which changes the number of reads.
 	 */
 	public static void runTest1()
 	{
@@ -51,9 +51,8 @@ public class ExecutionTimesReference
 		new Distribution.DistributeReference().call( args , null ) ;
 	}
 	
-	// change read lengths
 	/**
-	 * TODO
+	 * A test which changes the length of the reads.
 	 */
 	public static void runTest2()
 	{
@@ -68,9 +67,8 @@ public class ExecutionTimesReference
 		new Distribution.DistributeReference().call( args , null ) ;
 	}
 	
-	// change ref num
 	/**
-	 * TODO
+	 * A test which changes the number of reference sequences.
 	 */
 	public static void runTest3()
 	{
@@ -93,9 +91,8 @@ public class ExecutionTimesReference
 		}
 	}
 	
-	// change ref length
 	/**
-	 * TODO
+	 * A test which changes the length of the reference sequences.
 	 */
 	public static void runTest4()
 	{
@@ -122,7 +119,7 @@ public class ExecutionTimesReference
 	/* --- MAIN ------------------------------------------------------------ */
 	
 	/**
-	 * TODO
+	 * Main method. Runs the 4 benchmarking tests present in {@link metrics.ExecutionTimesReference}.
 	 * 
 	 * @param args None expected.
 	 */
