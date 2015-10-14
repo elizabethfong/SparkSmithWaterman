@@ -303,10 +303,7 @@ public class SmithWaterman
 		 * 							<ul>reference base pair</ul>
 		 * 							<ul>read base pair</ul>
 		 * 						</ul></p>
-		 * @param alignScores	<p><ul>A {@link scala.Tuple2} of alignment information used in filling the given matrices, in the order:
-		 * 							<ul>{@code int[]} alignment scores - match, mismatch, gap</ul>
-		 * 							<ul>{@code char[]} alignment types - alignment, insertion, deletion, none
-		 * 						</ul></p>
+		 * @param alignScores	<p><ul>alignment scores - match, mismatch, gap</ul></p>
 		 * 
 		 * @return				<p><ul>The score for an alignment of the base pairs corresponding to this cell.</ul></p>
 		 */

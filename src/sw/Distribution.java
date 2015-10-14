@@ -20,9 +20,9 @@ import scala.Tuple3 ;
 
 
 /**
- * <p>Runs the Smith-Waterman genetic alignment algorithm with different distribution methods. Written in functional Spark.<br />
- * Implemented methods: distribute algorithm, distribute reference dataset, no distribution <br />
- * To do: distribute reads
+ * <p>Runs the Smith-Waterman genetic alignment algorithm with different distribution methods. Written in functional Spark.
+ * 		<ul>Implemented methods: distribute algorithm, distribute reference dataset, no distribution</ul>
+ * 		<ul>To do: distribute reads</ul>
  * </p>
  * 
  * @author Elizabeth Fong
@@ -52,24 +52,37 @@ public class Distribution
 	/* --- DISTRIBUTE ALGORITHM -------------------------------------------- */
 	
 	/**
-	 * Finds the best-aligned reference to each of the input sequences in the input directory.
+	 * <p>
+	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
 	 * This uses a distributed version of the Smith-Waterman genetic alignment algorithm.
+	 * </p>
 	 * 
-	 * @param ioArgs 	An array of {@link java.lang.String} elements dealing with io, where: 
-	 * 			   		{@code ioArgs[0]} is the path to the directory with the reference sequences,
-	 * 			   		{@code ioArgs[1]} is the path to the directory with the input sequences,
-	 * 			   		{@code ioArgs[2]} is the delimiter to separate a reference sequence from the others,
-	 * 			   		{@code ioArgs[3]} is the path to the directory where output files should be written to,
-	 * 			   		{@code ioArgs[4]} is the general file name for the output files, and
-	 * 			   		{@code ioArgs[5]} is the file extension for the output files.
-	 * @param algoArgs 	A {@link scala.Tuple2} of elements that the algorithm requires, where:
-	 * 					{@code algoArgs._1()} is an {@code int[]} of scores, in the order { match , mismatch , gap }, and
-	 * 					{@code algoArgs._2()} is a {@code char[]} of alignment types, in the order { alignment , insertion , deletion , none }.
-	 * 
-	 * @return 			{@code null}
+	 * @see {@link org.apache.spark.api.java.function.Function2
 	 */
 	public static class DistributeAlgorithm implements Function2< String[] , Tuple2<int[],char[]> , Boolean >
 	{
+		/**
+		 * <p>
+		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+		 * This uses a distributed version of the Smith-Waterman genetic alignment algorithm.
+		 * </p>
+		 * 
+		 * @param ioArgs 	<p><ul>An array of {@link java.lang.String} elements dealing with io, where: 
+		 * 			   			<ul>{@code ioArgs[0]} - path to the directory with reference sequences</ul>
+		 * 			   			<ul>{@code ioArgs[1]} - path to the directory with input sequences</ul>
+		 * 			   			<ul>{@code ioArgs[2]} - delimiter to separate a reference sequence from the others</ul>
+		 * 			   			<ul>{@code ioArgs[3]} - path to the directory where output files should be written to</ul>
+		 * 			   			<ul>{@code ioArgs[4]} - general file name for output files</ul>
+		 * 			   			<ul>{@code ioArgs[5]} - file extension for output files</ul>
+		 * 					</ul></p>
+		 * @param algoArgs 	<p><ul>A {@link scala.Tuple2} of elements that the algorithm requires, where:
+		 * 						<ul>{@code int[]} alignment scores - match, mismatch, gap</ul>
+		 * 						<ul>{@code char[]} alignment types - alignment, insertion, deletion, none
+		 * 					</ul></p>
+		 * 
+		 * @return 			{@code null}
+		 */
+		@Override
 		public Boolean call( String[] ioArgs , Tuple2<int[],char[]> algoArgs )
 		{
 			// PARAMETERS
@@ -203,24 +216,37 @@ public class Distribution
 	/* --- DISTRIBUTE REFERENCE -------------------------------------------- */
 	
 	/**
-	 * Finds the best-aligned reference to each of the input sequences in the input directory.
+	 * <p>
+	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
 	 * This distributes the dataset of reference sequences.
+	 * </p>
 	 * 
-	 * @param ioArgs 	An array of {@link java.lang.String} elements dealing with io, where: 
-	 * 			   		{@code ioArgs[0]} is the path to the directory with the reference sequences,
-	 * 			   		{@code ioArgs[1]} is the path to the directory with the input sequences,
-	 * 			   		{@code ioArgs[2]} is the delimiter to separate a reference sequence from the others,
-	 * 			   		{@code ioArgs[3]} is the path to the directory where output files should be written to,
-	 * 			   		{@code ioArgs[4]} is the general file name for the output files, and
-	 * 			   		{@code ioArgs[5]} is the file extension for the output files.
-	 * @param algoArgs 	A {@link scala.Tuple2} of elements that the algorithm requires, where:
-	 * 					{@code algoArgs._1()} is an {@code int[]} of scores, in the order { match , mismatch , gap }, and
-	 * 					{@code algoArgs._2()} is a {@code char[]} of alignment types, in the order { alignment , insertion , deletion , none }.
-	 * 
-	 * @return 			{@code null}
+	 * @see {@link org.apache.spark.api.java.function.Function2
 	 */
 	public static class DistributeReference implements Function2< String[] , Tuple2<int[],char[]> , Boolean >
 	{
+		/**
+		 * <p>
+		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+		 * This distributes the dataset of reference sequences.
+		 * </p>
+		 * 
+		 * @param ioArgs 	<p><ul>An array of {@link java.lang.String} elements dealing with io, where: 
+		 * 			   			<ul>{@code ioArgs[0]} - path to the directory with reference sequences</ul>
+		 * 			   			<ul>{@code ioArgs[1]} - path to the directory with input sequences</ul>
+		 * 			   			<ul>{@code ioArgs[2]} - delimiter to separate a reference sequence from the others</ul>
+		 * 			   			<ul>{@code ioArgs[3]} - path to the directory where output files should be written to</ul>
+		 * 			   			<ul>{@code ioArgs[4]} - general file name for output files</ul>
+		 * 			   			<ul>{@code ioArgs[5]} - file extension for output files</ul>
+		 * 					</ul></p>
+		 * @param algoArgs 	<p><ul>A {@link scala.Tuple2} of elements that the algorithm requires, where:
+		 * 						<ul>{@code int[]} alignment scores - match, mismatch, gap</ul>
+		 * 						<ul>{@code char[]} alignment types - alignment, insertion, deletion, none
+		 * 					</ul></p>
+		 * 
+		 * @return 			{@code null}
+		 */
+		@Override
 		public Boolean call( String[] ioArgs , Tuple2<int[],char[]> algoArgs )
 		{
 			// PARAMETERS
@@ -346,20 +372,33 @@ public class Distribution
 	}
 	
 	/**
-	 * This function is run when the dataset of reference sequences is mapped. 
+	 * <p>
+	 * This function is run when the dataset of reference sequences is mapped.<br />
 	 * This uses the non-distributed version of the Smith-Waterman algorithm.
+	 * </p>
 	 * 
-	 * @param tuple	A {@link scala.Tuple3} of arguments, where:
-	 * 				{@code tuple._1()} is an array of 2 {@link java.lang.String} elements representing a reference sequence, in the order { metadata , sequence },
-	 * 				{@code tuple._2()} is an {@link java.util.ArrayList} of reads, extracted from an input file, and
-	 * 				{@code tuple._3()} is a {@link scala.Tuple2} of arguments used by the algorithm, in the order { alignment scores , alignment types }.
-	 * 
-	 * @return 		A {@link scala.Tuple2} representing a key-value pair, where:
-	 * 				the key is an {@link java.lang.Integer} representing the total score from aligning all reads, and
-	 * 				the value is a {@link scala.Tuple2} of the reference sequence and how the reads align to the sequence.
+	 * @see {@link org.apache.spark.api.java.function.PairFunction
 	 */
 	private static class MapRef implements PairFunction< Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>> , Integer , Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>> >
 	{
+		/**
+		 * <p>
+		 * This function is run when the dataset of reference sequences is mapped.<br />
+		 * This uses the non-distributed version of the Smith-Waterman algorithm.
+		 * </p>
+		 * 
+		 * @param tuple	<p><ul>A {@link scala.Tuple3} of arguments, where:
+		 * 					<ul>{@code tuple._1()} - A reference sequence - metadata , sequence</ul>
+		 * 					<ul>{@code tuple._2()} - {@link java.util.ArrayList} of reads</ul>
+		 * 					<ul>{@code tuple._3()} - arguments used by the algorithm - alignment scores , alignment types</ul>
+		 * 				</ul></p>
+		 * 
+		 * @return 		<p><ul>A {@link scala.Tuple2} representing a key-value pair, where:
+		 * 					<ul>key - total score from aligning all reads</ul>
+		 * 					<ul>value - a {@link scala.Tuple2} of the reference sequence and how the reads align to the sequence.</ul>
+		 * 				</ul></p>
+		 */
+		@Override
 		public Tuple2<Integer,Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> call( Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>> tuple )
 		{
 			// VARIABLES
@@ -399,24 +438,30 @@ public class Distribution
 	
 	/* --- DISTRIBUTE READS ------------------------------------------------ */
 	
-	/**
+	/*
 	 * TODO
 	 * 
-	 * Finds the best-aligned reference to each of the input sequences in the input directory.
+	 * <p>
+	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
 	 * This distributes the reads of the input.
+	 * </p>
 	 * 
-	 * @param ioArgs 	An array of {@link java.lang.String} elements dealing with io, where: 
-	 * 			   		{@code ioArgs[0]} is the path to the directory with the reference sequences,
-	 * 			   		{@code ioArgs[1]} is the path to the directory with the input sequences,
-	 * 			   		{@code ioArgs[2]} is the delimiter to separate a reference sequence from the others,
-	 * 			   		{@code ioArgs[3]} is the path to the directory where output files should be written to,
-	 * 			   		{@code ioArgs[4]} is the general file name for the output files, and
-	 * 			   		{@code ioArgs[5]} is the file extension for the output files.
-	 * @param algoArgs 	A {@link scala.Tuple2} of elements that the algorithm requires, where:
-	 * 					{@code algoArgs._1()} is an {@code int[]} of scores, in the order { match , mismatch , gap }, and
-	 * 					{@code algoArgs._2()} is a {@code char[]} of alignment types, in the order { alignment , insertion , deletion , none }.
+	 * @param ioArgs 	<p><ul>An array of {@link java.lang.String} elements dealing with io, where: 
+	 * 			   			<ul>{@code ioArgs[0]} - path to the directory with reference sequences</ul>
+	 * 			   			<ul>{@code ioArgs[1]} - path to the directory with input sequences</ul>
+	 * 			   			<ul>{@code ioArgs[2]} - delimiter to separate a reference sequence from the others</ul>
+	 * 			   			<ul>{@code ioArgs[3]} - path to the directory where output files should be written to</ul>
+	 * 			   			<ul>{@code ioArgs[4]} - general file name for output files</ul>
+	 * 			   			<ul>{@code ioArgs[5]} - file extension for output files</ul>
+	 * 					</ul></p>
+	 * @param algoArgs 	<p><ul>A {@link scala.Tuple2} of elements that the algorithm requires, where:
+	 * 						<ul>{@code int[]} alignment scores - match, mismatch, gap</ul>
+	 * 						<ul>{@code char[]} alignment types - alignment, insertion, deletion, none
+	 * 					</ul></p>
 	 * 
 	 * @return 			{@code null}
+	 * 
+	 * @see {@link org.apache.spark.api.java.function.Function2
 	 */
 	// less data skew, but need to remember all matching sites and scores
 	// for all sequences, before finding max
@@ -425,25 +470,39 @@ public class Distribution
 	/* --- CONTROL - NO DISTRIBUTION --------------------------------------- */
 	
 	/**
-	 * Control. 
-	 * Finds the best-aligned reference to each of the input sequences in the input directory.
+	 * <p>
+	 * Control. <br />
+	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
 	 * Does not use distribution.
+	 * <p>
 	 * 
-	 * @param ioArgs 	An array of {@link java.lang.String} elements dealing with io, where: 
-	 * 			   		{@code ioArgs[0]} is the path to the directory with the reference sequences,
-	 * 			   		{@code ioArgs[1]} is the path to the directory with the input sequences,
-	 * 			   		{@code ioArgs[2]} is the delimiter to separate a reference sequence from the others,
-	 * 			   		{@code ioArgs[3]} is the path to the directory where output files should be written to,
-	 * 			   		{@code ioArgs[4]} is the general file name for the output files, and
-	 * 			   		{@code ioArgs[5]} is the file extension for the output files.
-	 * @param algoArgs 	A {@link scala.Tuple2} of elements that the algorithm requires, where:
-	 * 					{@code algoArgs._1()} is an {@code int[]} of scores, in the order { match , mismatch , gap }, and
-	 * 					{@code algoArgs._2()} is a {@code char[]} of alignment types, in the order { alignment , insertion , deletion , none }.
-	 * 
-	 * @return 			{@code null}
+	 * @see {@link org.apache.spark.api.java.function.Function2
 	 */
 	public static class NoDistribution implements Function2< String[] , Tuple2<int[],char[]> , Boolean >
 	{
+		/**
+		 * <p>
+		 * Control. <br />
+		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+		 * Does not use distribution.
+		 * <p>
+		 * 
+		 * @param ioArgs 	<p><ul>An array of {@link java.lang.String} elements dealing with io, where: 
+		 * 			   			<ul>{@code ioArgs[0]} - path to the directory with reference sequences</ul>
+		 * 			   			<ul>{@code ioArgs[1]} - path to the directory with input sequences</ul>
+		 * 			   			<ul>{@code ioArgs[2]} - delimiter to separate a reference sequence from the others</ul>
+		 * 			   			<ul>{@code ioArgs[3]} - path to the directory where output files should be written to</ul>
+		 * 			   			<ul>{@code ioArgs[4]} - general file name for output files</ul>
+		 * 			   			<ul>{@code ioArgs[5]} - file extension for output files</ul>
+		 * 					</ul></p>
+		 * @param algoArgs 	<p><ul>A {@link scala.Tuple2} of elements that the algorithm requires, where:
+		 * 						<ul>{@code int[]} alignment scores - match, mismatch, gap</ul>
+		 * 						<ul>{@code char[]} alignment types - alignment, insertion, deletion, none
+		 * 					</ul></p>
+		 * 
+		 * @return 			{@code null}
+		 */
+		@Override
 		public Boolean call( String[] ioArgs , Tuple2<int[],char[]> algoArgs )
 		{
 			// PARAMETERS
@@ -577,13 +636,28 @@ public class Distribution
 	/* --- UTILITY --------------------------------------------------------- */
 	
 	/**
-	 * A {@link java.util.Comparator} of optimal sequences.
+	 * <p>
+	 * A {@link java.util.Comparator} of optimal sequences.<br />
 	 * This orders elements in ascending order of the metadata of the reference sequences.
+	 * </p>
 	 * 
 	 * @see {@link java.util.Comparator#compare(Object, Object)}
 	 */
 	private static class OptSeqsComp implements Comparator<Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>> , Serializable
 	{
+		/**
+		 * <p>
+		 * Returns a negative, 0, or positive integer, if the reference metadata of {@code t1} is alphabetically
+		 * smaller than the reference metadata of {@code t2}.
+		 * </p>
+		 * 
+		 * @param t1	The first element to be compared.
+		 * @param t2	The second element to be compared.
+		 * 
+		 * @return		<p><ul>A negative, 0, or positive integer, if the reference metadata of {@code t1} is alphabetically
+		 * 				smaller than the reference metadata of {@code t2}.</ul></p>
+		 */
+		@Override
 		public int compare( Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>> t1 , Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>> t2 )
 		{
 			return t1._1()[0].compareTo( t2._1()[0] ) ;
@@ -591,13 +665,28 @@ public class Distribution
 	}
 	
 	/**
-	 * A {@link java.util.Comparator} of matching sites.
+	 * <p>
+	 * A {@link java.util.Comparator} of matching sites.<br />
 	 * This orders elements in ascending order of the indices of the alignment.
+	 * </p>
 	 * 
 	 * @see {@link java.util.Comparator#compare(Object, Object)}
 	 */
 	private static class MatchSiteComp implements Comparator<Tuple2<Integer,String[]>> , Serializable
 	{
+		/**
+		 * <p>
+		 * Returns a negative, 0, or positive integer, if the match site index of {@code t1} is
+		 * smaller than the reference metadata of {@code t2}.
+		 * </p>
+		 * 
+		 * @param t1	The first element to be compared.
+		 * @param t2	The second element to be compared.
+		 * 
+		 * @return		<p><ul>A negative, 0, or positive integer, if the match site index of {@code t1} is
+		 * 				smaller than the reference metadata of {@code t2}.</ul></p>
+		 */
+		@Override
 		public int compare( Tuple2<Integer,String[]> t1 , Tuple2<Integer,String[]> t2 )
 		{
 			return t1._1().intValue() - t2._1().intValue() ;
@@ -607,14 +696,20 @@ public class Distribution
 	/**
 	 * A function used for combining arguments required for the map function when distributing reference sequences.
 	 * 
-	 * @param references	An array of {@String} elements which represent a reference sequence. Contains { metadata , sequence }.
-	 * @param reads			An {@link java.util.ArrayList} of reads extracted from an input file.
-	 * @param algoArgs		A {@link scala.Tuple2} of arguments required for the algorithm. Contains { alignment scores , alignment types}.
-	 * 
-	 * @return				An {@link java.util.ArrayList} where the reads and algorithm arguments are combined with each reference sequence.
+	 * @see {@link org.apache.spark.api.java.function.Function3
 	 */
 	private static class CombineReadsToRef implements Function3< ArrayList<String[]> , ArrayList<String> , Tuple2<int[],char[]> , ArrayList<Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>>> >
 	{
+		/**
+		 * A function used for combining arguments required for the map function when distributing reference sequences.
+		 * 
+		 * @param references	<p><ul>A {@code String[]} of a reference sequence - metadata , sequence</ul></p>
+		 * @param reads			<p><ul>An {@link java.util.ArrayList} of reads</ul></p>
+		 * @param algoArgs		<p><ul>Arguments required for the algorithm - alignment scores , alignment types</ul></p>
+		 * 
+		 * @return				<p><ul>An {@link java.util.ArrayList} where the reads and algorithm arguments are combined with each reference sequence.</ul></p>
+		 */
+		@Override
 		public ArrayList<Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>>> call( ArrayList<String[]> references , ArrayList<String> reads , Tuple2<int[],char[]> algoArgs )
 		{
 			ArrayList<Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>>> list = new ArrayList<Tuple3<String[],ArrayList<String>,Tuple2<int[],char[]>>>( references.size() ) ;
