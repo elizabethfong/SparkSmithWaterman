@@ -26,7 +26,7 @@ public class SmithWaterman
 	
 	/**
 	 * <p>
-	 * Finds the best-match reference sequence(s) to the given read, using the Smith-Waterman algorithm.<br />
+	 * Finds the best-match reference sequence(s) to the given read, using the Smith-Waterman algorithm.<br>
 	 * Returns the alignment score and the optimal alignments.
 	 * </p>
 	 * 
@@ -36,7 +36,7 @@ public class SmithWaterman
 	{
 		/**
 		 * <p>
-		 * Finds the best-match reference sequence(s) to the given read, using the Smith-Waterman algorithm.<br />
+		 * Finds the best-match reference sequence(s) to the given read, using the Smith-Waterman algorithm.<br>
 		 * Returns the alignment score and the optimal alignments.
 		 * </p>
 		 * 
@@ -97,8 +97,7 @@ public class SmithWaterman
 	
 	/**
 	 * <p>
-	 * Step 1 of the Smith-Waterman algorithm. Filling a matrix with scores and alignment information.<br />
-	 * This step is distributed, but is not optimal.
+	 * Step 1 of the Smith-Waterman algorithm. Filling a matrix with scores and alignment information.
 	 * </p>
 	 * 
 	 * @see	{@link org.apache.spark.api.java.function.Function3	
@@ -107,8 +106,7 @@ public class SmithWaterman
 	{
 		/**
 		 * <p>
-		 * Step 1 of the Smith-Waterman algorithm. Filling a matrix with scores and alignment information.<br />
-		 * This step is distributed, but is not optimal.
+		 * Step 1 of the Smith-Waterman algorithm. Filling a matrix with scores and alignment information.
 		 * </p>
 		 * 
 		 * @param matrices	<p><ul>A {@link scala.Tuple2} of matrices to be filled. 
@@ -256,7 +254,7 @@ public class SmithWaterman
 	
 	/**
 	 * <p>
-	 * Calculates and returns the insertion or deletion score of a cell.<br />
+	 * Calculates and returns the insertion or deletion score of a cell.<br>
 	 * Both scores are calculated in the same way.
 	 * </p>
 	 * 
@@ -266,7 +264,7 @@ public class SmithWaterman
 	{
 		/**
 		 * <p>
-		 * Calculates and returns the insertion or deletion score of a cell.<br />
+		 * Calculates and returns the insertion or deletion score of a cell.<br>
 		 * Both scores are calculated in the same way.
 		 * </p>
 		 * 
@@ -284,7 +282,7 @@ public class SmithWaterman
 	
 	/**
 	 * <p>
-	 * Calculates and returns the score for an alignment of base pairs.<br />
+	 * Calculates and returns the score for an alignment of base pairs.<br>
 	 * May be a match or a mismatch of base pairs.
 	 * </p>
 	 * 
@@ -294,7 +292,7 @@ public class SmithWaterman
 	{
 		/**
 		 * <p>
-		 * Calculates and returns the score for an alignment of base pairs.<br />
+		 * Calculates and returns the score for an alignment of base pairs.<br>
 		 * May be a match or a mismatch of base pairs.
 		 * </p>
 		 * 
@@ -325,7 +323,7 @@ public class SmithWaterman
 	
 	/**
 	 * <p>
-	 * Step 2 of the Smith-Waterman algorithm.<br />
+	 * Step 2 of the Smith-Waterman algorithm.<br>
 	 * Given a starting cell, backtracks through the matrix to obtain an optimal alignment.
 	 * </p>
 	 * 
@@ -335,7 +333,7 @@ public class SmithWaterman
 	{
 		/**
 		 * <p>
-		 * Step 2 of the Smith-Waterman algorithm.<br />
+		 * Step 2 of the Smith-Waterman algorithm.<br>
 		 * Given a starting cell, backtracks through the matrix to obtain an optimal alignment.
 		 * </p>
 		 * 

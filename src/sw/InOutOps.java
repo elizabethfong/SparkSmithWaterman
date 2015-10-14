@@ -23,7 +23,7 @@ import scala.Tuple3 ;
  * Class of functions dealing with input and ouput, restricted to:
  * 		<ul>reading from and writing to files</ul>
  * 		<ul>formatting data into a {@link java.lang.String} for printing</ul>
- * 		<ul>printing data to standard out</ul><br />
+ * 		<ul>printing data to standard out</ul><br>
  * 
  * Written in functional Spark.
  * </p>
@@ -173,7 +173,7 @@ public class InOutOps
 	
 	/**
 	 * <p>
-	 * Prints the given {@link java.lang.String} to the file with the given file path.<br />
+	 * Prints the given {@link java.lang.String} to the file with the given file path.<br>
 	 * The directory in which the file is to reside in must exist.
 	 * </p>
 	 * 
@@ -183,7 +183,7 @@ public class InOutOps
 	{
 		/**
 		 * <p>
-		 * Prints the given {@link java.lang.String} to the file with the given file path.<br />
+		 * Prints the given {@link java.lang.String} to the file with the given file path.<br>
 		 * The directory in which the file is to reside in must exist.
 		 * </p>
 		 * 
@@ -291,7 +291,7 @@ public class InOutOps
 	/**
 	 * <p>
 	 * Returns a formatted {@link java.lang.String} of the matrices of scores and corresponding 
-	 * alignment types generated in the first step of the Smith-Waterman algorithm.<br />
+	 * alignment types generated in the first step of the Smith-Waterman algorithm.<br>
 	 * Also prints this {@link java.lang.String} to standard out.
 	 * </p>
 	 * 
@@ -302,7 +302,7 @@ public class InOutOps
 		/**
 		 * <p>
 		 * Returns a formatted {@link java.lang.String} of the matrices of scores and corresponding 
-		 * alignment types generated in the first step of the Smith-Waterman algorithm.<br />
+		 * alignment types generated in the first step of the Smith-Waterman algorithm.<br>
 		 * Also prints this {@link java.lang.String} to standard out.
 		 * </p>
 		 * 

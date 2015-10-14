@@ -53,7 +53,7 @@ public class Distribution
 	
 	/**
 	 * <p>
-	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br>
 	 * This uses a distributed version of the Smith-Waterman genetic alignment algorithm.
 	 * </p>
 	 * 
@@ -63,7 +63,7 @@ public class Distribution
 	{
 		/**
 		 * <p>
-		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br>
 		 * This uses a distributed version of the Smith-Waterman genetic alignment algorithm.
 		 * </p>
 		 * 
@@ -217,7 +217,7 @@ public class Distribution
 	
 	/**
 	 * <p>
-	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br>
 	 * This distributes the dataset of reference sequences.
 	 * </p>
 	 * 
@@ -227,7 +227,7 @@ public class Distribution
 	{
 		/**
 		 * <p>
-		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br>
 		 * This distributes the dataset of reference sequences.
 		 * </p>
 		 * 
@@ -373,7 +373,7 @@ public class Distribution
 	
 	/**
 	 * <p>
-	 * This function is run when the dataset of reference sequences is mapped.<br />
+	 * This function is run when the dataset of reference sequences is mapped.<br>
 	 * This uses the non-distributed version of the Smith-Waterman algorithm.
 	 * </p>
 	 * 
@@ -383,7 +383,7 @@ public class Distribution
 	{
 		/**
 		 * <p>
-		 * This function is run when the dataset of reference sequences is mapped.<br />
+		 * This function is run when the dataset of reference sequences is mapped.<br>
 		 * This uses the non-distributed version of the Smith-Waterman algorithm.
 		 * </p>
 		 * 
@@ -442,7 +442,7 @@ public class Distribution
 	 * TODO
 	 * 
 	 * <p>
-	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br>
 	 * This distributes the reads of the input.
 	 * </p>
 	 * 
@@ -471,8 +471,8 @@ public class Distribution
 	
 	/**
 	 * <p>
-	 * Control. <br />
-	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+	 * Control. <br>
+	 * Finds the best-aligned reference to each of the input sequences in the input directory.<br>
 	 * Does not use distribution.
 	 * <p>
 	 * 
@@ -482,8 +482,8 @@ public class Distribution
 	{
 		/**
 		 * <p>
-		 * Control. <br />
-		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br />
+		 * Control. <br>
+		 * Finds the best-aligned reference to each of the input sequences in the input directory.<br>
 		 * Does not use distribution.
 		 * <p>
 		 * 
@@ -637,7 +637,7 @@ public class Distribution
 	
 	/**
 	 * <p>
-	 * A {@link java.util.Comparator} of optimal sequences.<br />
+	 * A {@link java.util.Comparator} of optimal sequences.<br>
 	 * This orders elements in ascending order of the metadata of the reference sequences.
 	 * </p>
 	 * 
@@ -666,7 +666,7 @@ public class Distribution
 	
 	/**
 	 * <p>
-	 * A {@link java.util.Comparator} of matching sites.<br />
+	 * A {@link java.util.Comparator} of matching sites.<br>
 	 * This orders elements in ascending order of the indices of the alignment.
 	 * </p>
 	 * 
@@ -677,14 +677,14 @@ public class Distribution
 		/**
 		 * <p>
 		 * Returns a negative, 0, or positive integer, if the match site index of {@code t1} is
-		 * smaller than the reference metadata of {@code t2}.
+		 * smaller than, equal to, or greater than, the reference metadata of {@code t2}.
 		 * </p>
 		 * 
 		 * @param t1	The first element to be compared.
 		 * @param t2	The second element to be compared.
 		 * 
 		 * @return		<p><ul>A negative, 0, or positive integer, if the match site index of {@code t1} is
-		 * 				smaller than the reference metadata of {@code t2}.</ul></p>
+		 * 				smaller than, equal to, or greater than, the reference metadata of {@code t2}.</ul></p>
 		 */
 		@Override
 		public int compare( Tuple2<Integer,String[]> t1 , Tuple2<Integer,String[]> t2 )
