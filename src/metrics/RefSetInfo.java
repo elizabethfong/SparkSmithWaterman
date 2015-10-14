@@ -103,17 +103,17 @@ public class RefSetInfo
 		// # files, # sequences, # base pairs
 		str.append( NEWLINE ) ;
 		str.append( "# files  =  " + result._2() + NEWLINE ) ;
-		str.append( format3("%-21s  %1s  $%,11d","# reference sequences","=",result._3()[0]) + NEWLINE ) ;
-		str.append( format3("%-21s  %1s  $%,11d","# total base pairs","=",result._3()[1]) + NEWLINE ) ;
+		str.append( format3("%-21s  %1s  %-,11d","# reference sequences","=",result._3()[0]) + NEWLINE ) ;
+		str.append( format3("%-21s  %1s  %-,11d","# total base pairs","=",result._3()[1]) + NEWLINE ) ;
 		
 		// min, max, mean, median - bp
 		str.append( NEWLINE ) ;
 		str.append( "base pairs in a sequence:" + NEWLINE ) ;
 		str.append( "-------------------------" + NEWLINE ) ;
-		str.append( format3("%-6s  %1s  $%-,10d","min","=",result._3()[2]) + NEWLINE ) ;
-		str.append( format3("%-6s  %1s  $%-,10d","max","=",result._3()[3]) + NEWLINE ) ;
-		str.append( format3("%-6s  %1s  $%-,10d","mean","=",result._4()[0]) + NEWLINE ) ;
-		str.append( format3("%-6s  %1s  $%-,.2f","median","=",result._4()[1]) + NEWLINE ) ;
+		str.append( format3("%-6s  %1s  %-,10d","min","=",result._3()[2]) + NEWLINE ) ;
+		str.append( format3("%-6s  %1s  %-,10d","max","=",result._3()[3]) + NEWLINE ) ;
+		str.append( format3("%-6s  %1s  %-,7.2f","mean","=",result._4()[0]) + NEWLINE ) ;
+		str.append( format3("%-6s  %1s  %-,7.2f","median","=",result._4()[1]) + NEWLINE ) ;
 		
 		// file list - alphabetical order (ascending)
 		str.append( NEWLINE + NEWLINE ) ;
