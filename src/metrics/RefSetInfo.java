@@ -81,7 +81,7 @@ public class RefSetInfo
 			ArrayList<String[]> refs = new InOutOps.GetRefSeqs().call( next , DELIMITER ) ;
 			
 			// extract file name from file path
-			String[] path = next.getPath().split( "\\\\" ) ;
+			String[] path = next.getPath().split( "/" ) ;
 			
 			fileList.add( new Tuple2<String,Integer>(path[path.length-1],refs.size()) ) ;
 			
@@ -180,7 +180,7 @@ public class RefSetInfo
 		
 		// header
 		str.append( format3("%-35s%1s%11s","File Name","|","# Sequences") + NEWLINE ) ;
-		str.append( "-----------------------------------|-----------" + NEWLINE ) ;
+		str.append( "-----------------------------------+-----------" + NEWLINE ) ;
 		formatter.close() ;
 		
 		// rows

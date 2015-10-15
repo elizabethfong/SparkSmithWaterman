@@ -108,7 +108,7 @@ public class ExecutionTimesReference
 		String inDir = IN4 ;
 		String delimiter = null ;
 		String outDir = OUT4 ;
-		String outGeneralName = null ;
+		String outGeneralName = "result" ;
 		String outFileExt = null ;
 		
 		int numDirs = 36 ;
