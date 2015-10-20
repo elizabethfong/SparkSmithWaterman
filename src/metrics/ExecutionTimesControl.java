@@ -50,7 +50,7 @@ public class ExecutionTimesControl
 		String outFileExt = null ;
 		
 		String[] args = { refDir , inDir , delimiter , outDir , outFileName , outFileExt } ;
-		new Distribution.DistributeReference().call( args , null ) ;
+		new Distribution.NoDistribution().call( args , null ) ;
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class ExecutionTimesControl
 		String outFileExt = null ;
 		
 		String[] args = { refDir , inDir , delimiter , outDir , outFileName , outFileExt } ;
-		new Distribution.DistributeReference().call( args , null ) ;
+		new Distribution.NoDistribution().call( args , null ) ;
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class ExecutionTimesControl
 			String outFileName = outGeneralName + i + "_" ;
 			
 			String[] args = { refDir , inDir , delimiter , outDir , outFileName , outFileExt } ;
-			new Distribution.DistributeReference().call( args , null ) ;
+			new Distribution.NoDistribution().call( args , null ) ;
 		}
 	}
 	
@@ -119,7 +119,7 @@ public class ExecutionTimesControl
 			String outFileName = outGeneralName + i + "_" ;
 			
 			String[] args = { refDir , inDir , delimiter , outDir , outFileName , outFileExt } ;
-			new Distribution.DistributeReference().call( args , null ) ;
+			new Distribution.NoDistribution().call( args , null ) ;
 		}
 	}
 	
