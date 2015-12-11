@@ -8,6 +8,7 @@ Elizabeth Fong
 * [Background](https://github.com/elizabethfong/SparkSmithWaterman#background)  
 * [Development Tools](https://github.com/elizabethfong/SparkSmithWaterman#development-tools) 
 * [Data Source](https://github.com/elizabethfong/SparkSmithWaterman#data-source)  
+* [Maven Dependencies](https://github.com/elizabethfong/SparkSmithWaterman#maven-dependencies)
 * [Algorithm Pseudocode](https://github.com/elizabethfong/SparkSmithWaterman#algorithm-pseudocode)
    * Matrix Generation and Filling
    * Extracting Optimal Alignments from Completed Matrix
@@ -28,7 +29,7 @@ The input may be in a variety of file formats, one of which is the FASTA format,
 * Hadoop 2.7.1
 * Apache Spark 1.4.1
 * Java 8  
-* Maven (for dependencies)
+* Apache Maven 3.3 (for dependencies)
 
 ## Data Source
 **[National Center for Biotechnology Information](ftp://ftp.ncbi.nlm.nih.gov/refseq/release)**
@@ -37,6 +38,15 @@ The input may be in a variety of file formats, one of which is the FASTA format,
 * total number of base pairs = **26,623,169,330**
 * mean (average) number of base pairs per sequence = **2,160**
 * median number of base pairs per sequence = **1,609**
+
+## Maven Dependencies
+**Apache Maven 3.3**
+* [Spark Project Core 2.10](http://mvnrepository.com/artifact/org.apache.spark/spark-core_2.10) version 1.4.1
+* [Apache Hadoop Client](http://mvnrepository.com/artifact/org.apache.hadoop/hadoop-client/2.7.1) version 2.7.1
+* Amazon AWS Java SDK
+   * [AWS SDK for Java](http://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk) version 1.9.0
+   * [Amazon S3](http://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3) version 1.9.0
+   * [DynamoDB](http://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb) version 1.9.0
 
 ## Algorithm Pseudocode
 **Matrix Generation and Filling**   
