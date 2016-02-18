@@ -27,7 +27,7 @@ The input may be in a variety of file formats, one of which is the FASTA format,
 
 ## Development Tools  
 * Hadoop 2.7.1
-* Apache Spark 1.4.1
+* Apache Spark 1.5.2
 * Java 8  
 * Apache Maven 3.3 (for dependencies)
 
