@@ -5,6 +5,7 @@ import java.io.Serializable ;
 import java.lang.StringBuilder ;
 
 import java.util.ArrayList ;
+import java.util.Collections;
 import java.util.Comparator ;
 import java.util.List ;
 import java.util.Stack ;
@@ -205,7 +206,7 @@ public class DistributedSW
 				
 				// reduce -> broadcast scores to children & grandchildren
 				List<Tuple4<int[],Integer,Character,boolean[]>> newScores = scoreRDD.collect() ;
-				newScores.sort( new CellResultComp() ) ;
+				Collections.sort( newScores , new CellResultComp() ) ;
 				
 				new Broadcast().call( newScores , children , grandchildren ) ;
 				
@@ -476,7 +477,7 @@ public class DistributedSW
 			
 			// reduce: sort by keys, then add values to 			
 			List<Tuple2<Integer,String[]>> matchSites = matchRDD.collect() ;
-			matchSites.sort( new MatchSiteComp() ) ;
+			Collections.sort( matchSites , new MatchSiteComp() ) ;
 			
 			ArrayList<Tuple2<Integer,String[]>> result = new ArrayList<Tuple2<Integer,String[]>>( matchSites.size() ) ;
 			

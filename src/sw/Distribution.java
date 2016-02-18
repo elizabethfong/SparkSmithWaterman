@@ -3,6 +3,7 @@ package sw ;
 import java.io.Serializable ;
 
 import java.util.ArrayList ;
+import java.util.Collections;
 import java.util.Comparator ;
 
 import org.apache.spark.SparkConf ;
@@ -182,12 +183,12 @@ public class Distribution
 							max = total ;
 							
 							opt.clear() ;
-							matchSites.sort( new DistributedSW.MatchSiteComp() ) ; 
+							Collections.sort( matchSites , new DistributedSW.MatchSiteComp() ) ; 
 							opt.add( new Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>(ref,matchSites) ) ;
 						}
 						else if( total == max )
 						{
-							matchSites.sort( new DistributedSW.MatchSiteComp() ) ;
+							Collections.sort( matchSites , new DistributedSW.MatchSiteComp() ) ;
 							opt.add( new Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>(ref,matchSites) ) ;
 						}
 						
@@ -197,7 +198,7 @@ public class Distribution
 				
 				// print to file
 				execTime = System.currentTimeMillis() - execTime ;
-				opt.sort( new OptSeqsComp() ) ;
+				Collections.sort( opt , new OptSeqsComp() ) ;
 				
 				int[] nums = { numRefs , numReads } ;
 				Tuple3<int[],Integer,Long> tuple = new Tuple3<int[],Integer,Long>( nums , max , execTime ) ;
@@ -355,7 +356,7 @@ public class Distribution
 							
 				// print to file
 				execTime = System.currentTimeMillis() - execTime ;
-				opt.sort( new OptSeqsComp() ) ;
+				Collections.sort( opt , new OptSeqsComp() ) ;
 				
 				int[] nums = { numRefs , numReads } ;
 				Tuple3<int[],Integer,Long> tuple = new Tuple3<int[],Integer,Long>( nums , max , execTime ) ;
@@ -424,7 +425,7 @@ public class Distribution
 				matchSites.addAll( result._2() ) ;
 			}
 			
-			matchSites.sort( new MatchSiteComp() ) ; 
+			Collections.sort( matchSites , new MatchSiteComp() ) ; 
 			
 			
 			// RETURN
@@ -602,12 +603,12 @@ public class Distribution
 							max = total ;
 							
 							opt.clear() ;
-							matchSites.sort( new MatchSiteComp() ) ; 
+							Collections.sort( matchSites , new MatchSiteComp() ) ; 
 							opt.add( new Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>(ref,matchSites) ) ;
 						}
 						else if( total == max )
 						{
-							matchSites.sort( new MatchSiteComp() ) ;
+							Collections.sort( matchSites , new MatchSiteComp() ) ;
 							opt.add( new Tuple2<String[],ArrayList<Tuple2<Integer,String[]>>>(ref,matchSites) ) ;
 						}
 						
@@ -617,7 +618,7 @@ public class Distribution
 				
 				// print to file
 				execTime = System.currentTimeMillis() - execTime ;
-				opt.sort( new OptSeqsComp() ) ;
+				Collections.sort( opt , new OptSeqsComp() ) ;
 				
 				int[] nums = { numRefs , numReads } ;
 				Tuple3<int[],Integer,Long> tuple = new Tuple3<int[],Integer,Long>( nums , max , execTime ) ;

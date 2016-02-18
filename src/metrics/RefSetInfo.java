@@ -5,6 +5,7 @@ import java.io.File ;
 import java.lang.StringBuilder ;
 
 import java.util.ArrayList ;
+import java.util.Collections;
 import java.util.Comparator ;
 import java.util.Formatter ;
 import java.util.Locale ;
@@ -151,13 +152,13 @@ public class RefSetInfo
 		// file list - alphabetical order (ascending)
 		str.append( NEWLINE + NEWLINE ) ;
 		ArrayList<Tuple2<String,Integer>> table = result._5() ;
-		table.sort( new FilenameComparator() ) ;
+		Collections.sort( table , new FilenameComparator() ) ;
 		str.append( getFormattedTable(table) ) ;
 		
 		// file list - size order (ascending)
 		str.append( NEWLINE + NEWLINE ) ;
 		table = result._5() ;
-		table.sort( new NumRefComparator() ) ;
+		Collections.sort( table , new NumRefComparator() ) ;
 		str.append( getFormattedTable(table) ) ;
 		
 		// print to file
